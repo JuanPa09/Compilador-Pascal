@@ -7,4 +7,10 @@
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="Irony">
+      <HintPath>..\..\..\..\..\..\..\..\..\..\compiladores2\Irony.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
