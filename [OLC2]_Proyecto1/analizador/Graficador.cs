@@ -12,8 +12,8 @@ namespace _OLC2__Proyecto1.analizador
 
         public static string getDot(ParseTreeNode raiz)
         {
-            grafo = "digraph G{";
-            grafo += "nodo0[label=\"" + escapar(raiz.ToString()) + "\"];\n";
+            grafo = "digraph G{\nnode[shape=box]\n";
+            grafo += "nodo0[label=\"" + escapar(raiz.Term.ToString()) + "\"];\n";
             contador = 1;
             recorrerAst("nodo0", raiz);
             grafo += "}";
@@ -25,7 +25,7 @@ namespace _OLC2__Proyecto1.analizador
             foreach (ParseTreeNode hijo in raiz.ChildNodes)
             {
                 string nameHijo = "nodo" + contador.ToString();
-                grafo += nameHijo + "[label=\"" + escapar(hijo.ToString()) + "\"];\n";
+                grafo += nameHijo + "[label=\"" + escapar(hijo.Term.ToString()) + "\"];\n";
                 grafo += padre + "->" + nameHijo + ";\n";
                 contador++;
                 recorrerAst(nameHijo, hijo);

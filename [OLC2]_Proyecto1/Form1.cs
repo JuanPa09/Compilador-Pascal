@@ -26,6 +26,7 @@ namespace _OLC2__Proyecto1
             LinearNumberPascal.Font = Pascal.Font;
             CompiPascal.Select();
             AddLineNumbers(CompiPascal, LinearNumberCompiPascal);
+            CompiPascal.Text = "program prueba;\nbegin\nend.";
 
 
         }
@@ -107,9 +108,12 @@ namespace _OLC2__Proyecto1
 
         private void button2_Click(object sender, EventArgs e)
         {
+            debuggerConsole.Text = "";
             Debug.WriteLine("Iniciando analizador!");
-            Analizador analizador = new Analizador();
+            debuggerConsole.AppendText("Iniciando Analizador!\n");
+            Analizador analizador = new Analizador(this.debuggerConsole);
             analizador.analizar(CompiPascal.Text);
+            debuggerConsole.AppendText("Finalizando Analizador!\n");
             Debug.WriteLine("Finalizando analizador!");
         }
 

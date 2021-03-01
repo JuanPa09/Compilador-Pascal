@@ -5,11 +5,20 @@ using Irony.Parsing;
 using Irony.Ast;
 using System.IO;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace _OLC2__Proyecto1.analizador
 {
+    
+
     class Analizador
     {
+        RichTextBox debuggerConsole;
+
+        public Analizador(RichTextBox debugger) {
+            this.debuggerConsole = debugger;
+        }
+
         public void analizar(string cadena) 
         {
             Gramatica gramatica = new Gramatica();
@@ -21,6 +30,7 @@ namespace _OLC2__Proyecto1.analizador
             Parser parser = new Parser(lenguaje);
             ParseTree arbol = parser.Parse(cadena);
             ParseTreeNode raiz = arbol.Root;
+
             if (arbol.ParserMessages.Count > 0) 
             {
                 foreach (var item in arbol.ParserMessages)
@@ -29,21 +39,26 @@ namespace _OLC2__Proyecto1.analizador
                     if (item.Message.Contains("Invalid character"))
                     {
                         Debug.WriteLine("Error Sintáctico: Linea " + item.Location.Line + " Columna: " + item.Location.Column + "Mensaje: " + item.Message);
-                        
+                        debuggerConsole.AppendText("Error Sintáctico: Linea " + item.Location.Line + " Columna: " + item.Location.Column + "Mensaje: " + item.Message+"\n");
                     }
                     else {
                         //Error Sintactico
                         Debug.WriteLine("Error Sintáctico: Linea "+item.Location.Line+" Columna: "+item.Location.Column+" Mensaje: "+item.Message);
+                        debuggerConsole.AppendText("Error Sintáctico: Linea " + item.Location.Line + " Columna: " + item.Location.Column + " Mensaje: " + item.Message+"\n");
                     }
                 }
             }
+
             if (raiz == null) {
                 Debug.WriteLine(arbol.ParserMessages[0].Message);
+                debuggerConsole.AppendText(arbol.ParserMessages[0].Message+"\n");
                 return;
             }
             generarGrafo(raiz);
 
         }
+
+        
 
         public void generarGrafo(ParseTreeNode raiz) 
         {

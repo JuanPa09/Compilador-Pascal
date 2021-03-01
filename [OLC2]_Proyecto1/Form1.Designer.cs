@@ -41,13 +41,15 @@ namespace _OLC2__Proyecto1
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.debuggerConsole = new System.Windows.Forms.RichTextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Comic Sans MS", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(387, 9);
+            this.label1.Location = new System.Drawing.Point(538, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(216, 45);
             this.label1.TabIndex = 0;
@@ -70,12 +72,14 @@ namespace _OLC2__Proyecto1
             // 
             // CompiPascal
             // 
+            this.CompiPascal.AcceptsTab = true;
             this.CompiPascal.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.CompiPascal.Location = new System.Drawing.Point(61, 80);
             this.CompiPascal.Name = "CompiPascal";
-            this.CompiPascal.Size = new System.Drawing.Size(394, 417);
+            this.CompiPascal.Size = new System.Drawing.Size(542, 417);
             this.CompiPascal.TabIndex = 2;
             this.CompiPascal.Text = "";
+            this.CompiPascal.WordWrap = false;
             this.CompiPascal.SelectionChanged += new System.EventHandler(this.CompiPascal_SelectionChanged);
             this.CompiPascal.VScroll += new System.EventHandler(this.CompiPascal_VScroll);
             this.CompiPascal.TextChanged += new System.EventHandler(this.CompiPascal_TextChanged);
@@ -85,7 +89,7 @@ namespace _OLC2__Proyecto1
             this.LinearNumberPascal.BackColor = System.Drawing.SystemColors.Control;
             this.LinearNumberPascal.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.LinearNumberPascal.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.LinearNumberPascal.Location = new System.Drawing.Point(522, 80);
+            this.LinearNumberPascal.Location = new System.Drawing.Point(700, 75);
             this.LinearNumberPascal.Name = "LinearNumberPascal";
             this.LinearNumberPascal.ReadOnly = true;
             this.LinearNumberPascal.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -105,7 +109,7 @@ namespace _OLC2__Proyecto1
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(582, 62);
+            this.label3.Location = new System.Drawing.Point(760, 57);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(43, 15);
             this.label3.TabIndex = 5;
@@ -114,9 +118,9 @@ namespace _OLC2__Proyecto1
             // Pascal
             // 
             this.Pascal.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Pascal.Location = new System.Drawing.Point(582, 80);
+            this.Pascal.Location = new System.Drawing.Point(760, 75);
             this.Pascal.Name = "Pascal";
-            this.Pascal.Size = new System.Drawing.Size(394, 417);
+            this.Pascal.Size = new System.Drawing.Size(542, 417);
             this.Pascal.TabIndex = 6;
             this.Pascal.Text = "";
             this.Pascal.SelectionChanged += new System.EventHandler(this.Pascal_SelectionChanged);
@@ -125,16 +129,16 @@ namespace _OLC2__Proyecto1
             // Consola
             // 
             this.Consola.BackColor = System.Drawing.SystemColors.Info;
-            this.Consola.Location = new System.Drawing.Point(12, 531);
+            this.Consola.Location = new System.Drawing.Point(380, 531);
             this.Consola.Name = "Consola";
-            this.Consola.Size = new System.Drawing.Size(964, 150);
+            this.Consola.Size = new System.Drawing.Size(922, 276);
             this.Consola.TabIndex = 7;
             this.Consola.Text = "";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 510);
+            this.label4.Location = new System.Drawing.Point(380, 513);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(53, 15);
             this.label4.TabIndex = 8;
@@ -172,11 +176,32 @@ namespace _OLC2__Proyecto1
             this.button3.Text = "Reportes";
             this.button3.UseVisualStyleBackColor = true;
             // 
+            // debuggerConsole
+            // 
+            this.debuggerConsole.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.debuggerConsole.Location = new System.Drawing.Point(9, 531);
+            this.debuggerConsole.Name = "debuggerConsole";
+            this.debuggerConsole.ReadOnly = true;
+            this.debuggerConsole.Size = new System.Drawing.Size(365, 276);
+            this.debuggerConsole.TabIndex = 12;
+            this.debuggerConsole.Text = "";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(17, 513);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(59, 15);
+            this.label5.TabIndex = 13;
+            this.label5.Text = "Debugger";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(991, 693);
+            this.ClientSize = new System.Drawing.Size(1327, 819);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.debuggerConsole);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -211,6 +236,8 @@ namespace _OLC2__Proyecto1
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.RichTextBox debuggerConsole;
+        private System.Windows.Forms.Label label5;
     }
 }
 
