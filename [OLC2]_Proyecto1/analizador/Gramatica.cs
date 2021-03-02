@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Irony.Ast;
 using Irony.Parsing;
 
@@ -25,23 +24,17 @@ namespace _OLC2__Proyecto1.analizador
             #endregion
 
             #region Terminales
-
             var Program = ToTerm("program");
-
             var Write = ToTerm("write");
             var WriteLn = ToTerm("writeln");
             var Exit = ToTerm("exit");
             var Graficar = ToTerm("graficar_ts");
-
             var Function = ToTerm("function");
             var Procedure = ToTerm("Procedure");
-
             var Begin = ToTerm("begin");
             var End = ToTerm("end");
-
             var Var = ToTerm("var");
             var Const = ToTerm("const");
-
             var Void = ToTerm("void");
             var Type = ToTerm("type");
             var String = ToTerm("string");
@@ -50,7 +43,6 @@ namespace _OLC2__Proyecto1.analizador
             var Boolean = ToTerm("boolean");
             var Object = ToTerm("object");
             var Array = ToTerm("array");
-
             var Cor_Izq = ToTerm("[");
             var Cor_Der = ToTerm("]");
             var Par_Izq = ToTerm("(");
@@ -59,13 +51,11 @@ namespace _OLC2__Proyecto1.analizador
             var Pt_Coma = ToTerm(";");
             var Ds_Pts = ToTerm(":");
             var Coma = ToTerm(",");
-
             var Mas = ToTerm("+");
             var Menos = ToTerm("-");
             var Por = ToTerm("*");
             var Div = ToTerm("/");
             var Mod = ToTerm("%");
-
             var Igual = ToTerm("=");
             var No_Igual = ToTerm("<>");
             var Men_Que = ToTerm("<");
@@ -75,29 +65,20 @@ namespace _OLC2__Proyecto1.analizador
             var And = ToTerm("and");
             var Or = ToTerm("or");
             var Not = ToTerm("not");
-
             var If = ToTerm("if");
             var Then = ToTerm("then");
             var Else = ToTerm("else");
-
             var For = ToTerm("for");
             var To = ToTerm("to");
             var Do = ToTerm("do");
-
             var While = ToTerm("while");
-
             var Repeat = ToTerm("repeat");
             var Until = ToTerm("until");
-
             var Case = ToTerm("case");
             var Of = ToTerm("of");
-
             var Break = ToTerm("break");
             var Continue = ToTerm("continue");
-
-
             var Epsilon = this.Empty;
-
             NonGrammarTerminals.Add(Comentario_Simple);
             NonGrammarTerminals.Add(Comentario_Multi1);
             NonGrammarTerminals.Add(Comentario_Multi2);
@@ -131,13 +112,10 @@ namespace _OLC2__Proyecto1.analizador
             NonTerminal Expresion_Logica = new NonTerminal("Expresion_Logica");
             NonTerminal Valor = new NonTerminal("Valor");
             NonTerminal Writep = new NonTerminal("Mas_Texto");
-
             NonTerminal Parametros_Asignacion = new NonTerminal("Parametros_Asignacion");
             NonTerminal ParametrosAsignacionp = new NonTerminal("Parametros_Asignacionp");
             NonTerminal Parametros_Entrada = new NonTerminal("Parametros_Entrada");
-
             NonTerminal Asignacion = new NonTerminal("Asignacion");
-
             NonTerminal If_Statement = new NonTerminal("If_Statement");
             NonTerminal Else_Statement = new NonTerminal("Else_Statement");
             NonTerminal Else_Instruccion = new NonTerminal("Else_Instruccion");
@@ -149,31 +127,23 @@ namespace _OLC2__Proyecto1.analizador
             NonTerminal Cases_Statementp = new NonTerminal("Cases_Statementp");
             NonTerminal Repeat_Statement = new NonTerminal("Repeat_Satement");
             NonTerminal Declaraciones_Type = new NonTerminal("Declaraciones_Type");
-
             NonTerminal Types = new NonTerminal("Types");
             NonTerminal Objeto = new NonTerminal("Objeto");
             NonTerminal Tipo_Array = new NonTerminal("Tipo_Array");
-
             NonTerminal Sentencia = new NonTerminal("Sentencia");
-
             NonTerminal Pt_Comas = new NonTerminal("Pt_Comas");
-            /*NonTerminal Pt_Comasp = new NonTerminal("Pt_Comas");*/
-
             NonTerminal Asignacion_Variable = new NonTerminal("Asigacion_Variable");
             NonTerminal Nueva_Asignacion_Variable = new NonTerminal("Nueva_Asignacion_Variable");
             NonTerminal Nueva_Asignacion_Variablep = new NonTerminal("Nueva_Asignacion_Variablep");
-
             NonTerminal Nueva_Asignacion_Constante = new NonTerminal("Nueva_Asignacion_Constante");
-
-            NonTerminal Valor_Arreglo = new NonTerminal("Valor_Arreglo");
-
-            
+            NonTerminal Valor_Arreglo = new NonTerminal("Valor_Arreglo");     
             NonTerminal Funcion = new NonTerminal("Funcion");
-
             NonTerminal Procedimiento = new NonTerminal("Procedimiento");
-
             NonTerminal Llamada = new NonTerminal("Llamada");
-
+            NonTerminal Writes = new NonTerminal("Writes");
+            NonTerminal Instrucciones_Ciclo = new NonTerminal("Instrucciones_Ciclo");
+            NonTerminal Instruccion_Ciclo = new NonTerminal("Instruccion_Ciclo");
+            NonTerminal Sentencias_Transferencia = new NonTerminal("Sentencias_Transferencia");
             NonTerminal A = new NonTerminal("a");
             NonTerminal B = new NonTerminal("b");
             NonTerminal C = new NonTerminal("c");
@@ -199,6 +169,11 @@ namespace _OLC2__Proyecto1.analizador
                                         | Epsilon
                                         ;
 
+            /*Head.ErrorRule
+                                        = SyntaxError + Begin
+                                        ;*/
+            
+
             Instrucciones_Head.Rule
                                         = Instruccion_Head + Instrucciones_Headp
                                         ;
@@ -215,6 +190,7 @@ namespace _OLC2__Proyecto1.analizador
                                         | Procedimiento
                                         | Types
                                         ;
+
             Types.Rule
                                         =Objeto
                                         |Tipo_Array
@@ -224,9 +200,18 @@ namespace _OLC2__Proyecto1.analizador
                                         = Type + Identificador + Igual + Object + Declaraciones_Type + End + Pt_Coma
                                         ;
 
+            /*Objeto.ErrorRule
+                                        = SyntaxError + End + Pt_Coma
+                                        ;*/
+
+
             Tipo_Array.Rule
                                         = Type + Identificador + Igual + Array + Cor_Izq + Entero + Pt + Pt + Entero + Cor_Der + Of + Tipo_Variable + Pt_Coma
                                         ;
+
+            /*Tipo_Array.ErrorRule
+                                        = SyntaxError + Pt_Coma
+                                        ;*/
 
 
             Declaraciones_Type.Rule
@@ -239,6 +224,10 @@ namespace _OLC2__Proyecto1.analizador
                                         = Instrucciones_Body
                                         | Epsilon
                                         ;
+
+            /*Body.ErrorRule
+                                        = SyntaxError + End
+                                        ;*/
 
 
             Instrucciones_Body.Rule
@@ -262,18 +251,44 @@ namespace _OLC2__Proyecto1.analizador
                                         | Epsilon
                                         ;
 
+
+
             Retorno_Funcion.Rule
                                         =Exit + Par_Izq + Parametros_Entrada + Par_Der + Pt_Comas
                                         ;
 
+            Instrucciones_Ciclo.Rule
+                                        = Instruccion_Ciclo
+                                        | Epsilon
+                                        ;
+
+            Instruccion_Ciclo.Rule
+                                        = Instruccion_Body + Instrucciones_Ciclo
+                                        | Instruccion_Head + Instrucciones_Ciclo
+                                        | Sentencias_Transferencia + Instrucciones_Ciclo
+                                        ;
+
+            Sentencias_Transferencia.Rule
+                                        = Break
+                                        | Continue
+                                        ;
+
 
             Instruccion_Body.Rule
-                                        = Write + Par_Izq + Expresion_Cadena + Writep + Par_Der + Pt_Comas
-                                        | WriteLn + Par_Izq + Expresion_Cadena + Writep + Par_Der + Pt_Comas
+                                        = Writes
                                         | Asignacion
                                         | Sentencia
                                         | Llamada + Pt_Comas
                                         ;
+
+            Writes.Rule
+                                        = Write + Par_Izq + Expresion_Cadena + Writep + Par_Der + Pt_Comas
+                                        | WriteLn + Par_Izq + Expresion_Cadena + Writep + Par_Der + Pt_Comas
+                                        ;
+
+            /*Writes.ErrorRule
+                                        = SyntaxError + Pt_Coma
+                                        ;*/
 
             Writep.Rule
                                         = Coma + Expresion_Cadena + Writep
@@ -282,18 +297,22 @@ namespace _OLC2__Proyecto1.analizador
 
 
             Funcion.Rule
-                                        = /*Function + Identificador + Par_Izq + Parametros_Asignacion + Par_Der + Ds_Pts + Tipo_Variable + Pt_Coma + Instrucciones_Headp + Begin + Instrucciones_Bodyp + Exit + Par_Izq + Expresion_Cadena + Par_Der + Pt_Comas + End + Pt_Coma
-                                        |*/ Function + Identificador + Par_Izq + Parametros_Asignacion + Par_Der + Ds_Pts + Tipo_Variable + Pt_Coma + Instrucciones_Headp + Begin + Instrucciones_Funcion + End + Pt_Coma
-                                        | Function + Identificador + Ds_Pts + Tipo_Variable + Pt_Coma + Instrucciones_Headp + Begin + Instrucciones_Bodyp + Exit + Par_Izq + Expresion_Cadena + Par_Der + Pt_Comas + End + Pt_Coma
-                                        | Function + Identificador + Ds_Pts + Tipo_Variable + Pt_Coma + Instrucciones_Headp + Begin + Instrucciones_Bodyp + End + Pt_Coma
+                                        = Function + Identificador + Par_Izq + Parametros_Asignacion + Par_Der + Ds_Pts + Tipo_Variable + Pt_Coma + Instrucciones_Headp + Begin + Instrucciones_Funcion + End + Pt_Coma
+                                        | Function + Identificador + Ds_Pts + Tipo_Variable + Pt_Coma + Instrucciones_Headp + Begin + Instrucciones_Funcion + End + Pt_Coma
                                         ;
+
+            /*Funcion.ErrorRule           = SyntaxError + End + Pt
+                                        ;*/
+
 
             Procedimiento.Rule
                                         = Procedure + Identificador + Par_Izq + Parametros_Asignacion + Par_Der + Pt_Coma + Instrucciones_Headp + Begin + Instrucciones_Bodyp + End + Pt_Coma
                                         | Procedure + Identificador + Pt_Coma + Instrucciones_Headp + Begin + Instrucciones_Bodyp + End + Pt_Coma
                                         ;
 
-
+            /*Procedimiento.ErrorRule
+                                        = SyntaxError + End + Pt_Coma
+                                        ;*/
             
             
             Sentencia.Rule
@@ -311,17 +330,29 @@ namespace _OLC2__Proyecto1.analizador
                                         | Valor_Arreglo + Ds_Pts + Igual + Expresion_Cadena + Pt_Coma
                                         ;
 
+            /*Asignacion.ErrorRule
+                                        = SyntaxError + Pt_Coma
+                                        ;*/
+
+
             If_Statement.Rule
                                         = If + Par_Izq + Expresion_Logica + Par_Der + Then  + Begin + Instrucciones_Bodyp + End + Else_Statement + Pt_Coma
                                         | If + Expresion_Logica + Then + Begin + Instrucciones_Bodyp + End + Else_Statement + Pt_Coma
+                                        | If + Par_Izq + Expresion_Logica + Par_Der + Then + Instruccion_Body + Else_Instruccion
                                         | If + Expresion_Logica + Then + Instruccion_Body + Else_Instruccion
-                 /*Tiene Ambiguedad*/   //| If + Expresion_Logica + Then + Instruccion_Body + Else + Instruccion_Body
                                         ;
+
+            /*If_Statement.ErrorRule
+                                        = SyntaxError + End + Pt_Coma
+                                        ;*/
+
 
             Else_Statement.Rule
                                         = Else + Begin + Instrucciones_Bodyp + End
                                         | Epsilon
                                         ;
+
+            
 
             Else_Instruccion.Rule
                                         = Else + Instruccion_Body
@@ -332,10 +363,19 @@ namespace _OLC2__Proyecto1.analizador
                                         = Case + Par_Izq + Expresion_Logica + Par_Der + Of + Cases_Statement + End + Pt_Coma
                                         ;
 
+            /*Cases_Statement.ErrorRule
+                                        = End + Pt_Coma
+                                        ;*/
+
+
             Cases_Statement.Rule
-                                        = Expresion_Cadena + Ds_Pts + Begin + Instrucciones_Bodyp + End + Cases_Statementp //Varias Instrucciones
+                                        = Expresion_Cadena + Ds_Pts + Begin + Instrucciones_Bodyp + End + Pt_Coma + Cases_Statementp //Varias Instrucciones
                                         | Expresion_Cadena + Ds_Pts + Instruccion_Body + Cases_Statementp                   //Una Instruccion
                                         ;
+
+            /*Cases_Statement.ErrorRule
+                                        = SyntaxError + End + Pt_Coma
+                                        ;*/
 
             Cases_Statementp.Rule
                                         = Cases_Statement
@@ -344,22 +384,40 @@ namespace _OLC2__Proyecto1.analizador
                                         ;
 
             Case_Else_Statement.Rule
-                                        = Else + Begin + Instrucciones_Bodyp + End      //Varias Instrucciones
+                                        = Else + Begin + Instrucciones_Bodyp + End + Pt_Coma      //Varias Instrucciones
                                         | Else + Instruccion_Body                       //Una Instruccion
                                         ;
 
+            /*Case_Else_Statement.ErrorRule
+                                        = SyntaxError + End + Pt_Coma
+                                        ;*/
+
             For_Statement.Rule
-                                        = For + Identificador + Ds_Pts + Igual + Valor + To + Valor + Do + Begin + Instrucciones_Bodyp + End + Pt_Coma
+                                        = For + Identificador + Ds_Pts + Igual + Valor + To + Valor + Do + Begin + Instrucciones_Ciclo + End + Pt_Coma
                                         ;
+
+            /*For_Statement.ErrorRule
+                                        = SyntaxError + End + Pt_Coma
+                                        ;*/
 
             While_Statement.Rule
-                                        = While + Expresion_Logica + Do + Begin + Instrucciones_Bodyp + End + Pt_Coma
-                                        | While + Par_Izq + Expresion_Logica + Par_Der + Do + Begin + Instrucciones_Bodyp + End + Pt_Coma
+                                        = While + Expresion_Logica + Do + Begin + Instrucciones_Ciclo + End + Pt_Coma
+                                        | While + Par_Izq + Expresion_Logica + Par_Der + Do + Begin + Instrucciones_Ciclo + End + Pt_Coma
                                         ;
 
+            /*While_Statement.ErrorRule
+                                        = SyntaxError + End + Pt_Coma
+                                        ;*/
+
+
             Repeat_Statement.Rule
-                                        = Repeat + Instrucciones_Bodyp + Until + Expresion_Logica + Pt_Coma
+                                        = Repeat + Instrucciones_Ciclo + Until + Expresion_Logica + Pt_Coma
                                         ;
+
+            /*Repeat_Statement.ErrorRule
+                                        =SyntaxError + Pt_Coma
+                                        ;*/
+
 
 
             Variables.Rule
@@ -369,9 +427,9 @@ namespace _OLC2__Proyecto1.analizador
                   /*Tiene Ambiguedad*/  |  Var + Nueva_Asignacion_Variable
                                         ;
 
-            Variables.ErrorRule
+            /*Variables.ErrorRule
                                         = SyntaxError + Pt_Coma
-                                        ;
+                                        ;*/
 
 
             Asignacion_Variable.Rule

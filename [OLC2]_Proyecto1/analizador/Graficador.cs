@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Irony.Parsing;
 
+
 namespace _OLC2__Proyecto1.analizador
 {
     class Graficador
@@ -25,7 +26,7 @@ namespace _OLC2__Proyecto1.analizador
             foreach (ParseTreeNode hijo in raiz.ChildNodes)
             {
                 string nameHijo = "nodo" + contador.ToString();
-                grafo += nameHijo + "[label=\"" + escapar(hijo.Term.ToString()) + "\"];\n";
+                grafo += nameHijo + "[label=\"" + escapar(hijo.ToString()) + "\"];\n";
                 grafo += padre + "->" + nameHijo + ";\n";
                 contador++;
                 recorrerAst(nameHijo, hijo);

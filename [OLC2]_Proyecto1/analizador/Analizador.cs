@@ -54,6 +54,9 @@ namespace _OLC2__Proyecto1.analizador
                 debuggerConsole.AppendText(arbol.ParserMessages[0].Message+"\n");
                 return;
             }
+
+            
+
             generarGrafo(raiz);
 
         }
@@ -72,6 +75,7 @@ namespace _OLC2__Proyecto1.analizador
                     byte[] info = new UTF8Encoding(true).GetBytes(grafoDot);
                     fs.Write(info, 0, info.Length);
                 }
+                debuggerConsole.AppendText("Arbol generado!\n");
             }
             catch (Exception ex) 
             {
