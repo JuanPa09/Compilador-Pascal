@@ -6,20 +6,19 @@ using Irony.Parsing;
 
 namespace _OLC2__Proyecto1.analizador
 {
-    class Gramatica:Grammar
+    class Gramatica_Ascendente : Grammar
     {
-
-        public Gramatica() : base(caseSensitive: false)
+        public Gramatica_Ascendente() : base(caseSensitive:false)
         {
             #region ER
             var Identificador = new IdentifierTerminal("ID");
             var Entero = new NumberLiteral("INT");
-            var Decimal = new RegexBasedTerminal("DOUBLE","[0-9]+[.][0-9]+");
+            var Decimal = new RegexBasedTerminal("DOUBLE", "[0-9]+[.][0-9]+");
             var Cadena = new RegexBasedTerminal("CADENA", "\'[^\']*\'");
 
-            var Comentario_Simple = new CommentTerminal("Comentario_Simple","//","\n","\r\n");
-            var Comentario_Multi1 = new CommentTerminal("Comentario_Multilinea1","(*","*)");
-            var Comentario_Multi2 = new CommentTerminal("Comentario_Multilinea2","{","}");
+            var Comentario_Simple = new CommentTerminal("Comentario_Simple", "//", "\n", "\r\n");
+            var Comentario_Multi1 = new CommentTerminal("Comentario_Multilinea1", "(*", "*)");
+            var Comentario_Multi2 = new CommentTerminal("Comentario_Multilinea2", "{", "}");
 
             #endregion
 
@@ -136,7 +135,7 @@ namespace _OLC2__Proyecto1.analizador
             NonTerminal Nueva_Asignacion_Variable = new NonTerminal("Nueva_Asignacion_Variable");
             NonTerminal Nueva_Asignacion_Variablep = new NonTerminal("Nueva_Asignacion_Variablep");
             NonTerminal Nueva_Asignacion_Constante = new NonTerminal("Nueva_Asignacion_Constante");
-            NonTerminal Valor_Arreglo = new NonTerminal("Valor_Arreglo");     
+            NonTerminal Valor_Arreglo = new NonTerminal("Valor_Arreglo");
             NonTerminal Funcion = new NonTerminal("Funcion");
             NonTerminal Procedimiento = new NonTerminal("Procedimiento");
             NonTerminal Llamada = new NonTerminal("Llamada");
@@ -160,11 +159,11 @@ namespace _OLC2__Proyecto1.analizador
                                         = Estructura
                                         ;
 
-            Estructura.Rule 
+            Estructura.Rule
                                         = Program + Identificador + Pt_Coma + Head + Begin + Body + End + Pt
                                         ;
 
-            Head.Rule 
+            Head.Rule
                                         = Instrucciones_Head
                                         | Epsilon
                                         ;
@@ -172,7 +171,7 @@ namespace _OLC2__Proyecto1.analizador
             /*Head.ErrorRule
                                         = SyntaxError + Begin
                                         ;*/
-            
+
 
             Instrucciones_Head.Rule
                                         = Instruccion_Head + Instrucciones_Headp
@@ -198,8 +197,8 @@ namespace _OLC2__Proyecto1.analizador
 
 
             Types.Rule
-                                        =Objeto
-                                        |Tipo_Array
+                                        = Objeto
+                                        | Tipo_Array
                                         ;
 
             Objeto.Rule
@@ -265,7 +264,7 @@ namespace _OLC2__Proyecto1.analizador
 
 
             Retorno_Funcion.Rule
-                                        =Exit + Par_Izq + Parametros_Entrada + Par_Der + Pt_Comas
+                                        = Exit + Par_Izq + Parametros_Entrada + Par_Der + Pt_Comas
                                         ;
 
             Instrucciones_Ciclo.Rule
@@ -336,8 +335,8 @@ namespace _OLC2__Proyecto1.analizador
             /*Procedimiento.ErrorRule
                                         = SyntaxError + End + Pt_Coma
                                         ;*/
-            
-            
+
+
             Sentencia.Rule
                                         = If_Statement
                                         | Case_Statement
@@ -345,7 +344,7 @@ namespace _OLC2__Proyecto1.analizador
                                         | While_Statement
                                         | Repeat_Statement
                                         ;
-                                        
+
 
 
             Asignacion.Rule
@@ -359,7 +358,7 @@ namespace _OLC2__Proyecto1.analizador
 
 
             If_Statement.Rule
-                                        = If + Par_Izq + Expresion_Logica + Par_Der + Then  + Begin + Instrucciones_Bodyp + End + Else_Statement + Pt_Coma
+                                        = If + Par_Izq + Expresion_Logica + Par_Der + Then + Begin + Instrucciones_Bodyp + End + Else_Statement + Pt_Coma
                                         | If + Expresion_Logica + Then + Begin + Instrucciones_Bodyp + End + Else_Statement + Pt_Coma
                                         | If + Par_Izq + Expresion_Logica + Par_Der + Then + Instruccion_Body + Else_Instruccion
                                         | If + Expresion_Logica + Then + Instruccion_Body + Else_Instruccion
@@ -375,7 +374,7 @@ namespace _OLC2__Proyecto1.analizador
                                         | Epsilon
                                         ;
 
-            
+
 
             Else_Instruccion.Rule
                                         = Else + Instruccion_Body
@@ -445,9 +444,9 @@ namespace _OLC2__Proyecto1.analizador
 
             Variables.Rule
                                         = Const + Nueva_Asignacion_Constante
-        /*Deshabilitar si habilito la de la ambiguedad*/ //| Var + Asignacion_Variable
-                                        //| Var + Begin + Nueva_Asignacion_Variable + End + Pt_Coma
-                  /*Tiene Ambiguedad*/  |  Var + Nueva_Asignacion_Variable
+                  /*Deshabilitar si habilito la de la ambiguedad*/ //| Var + Asignacion_Variable
+                                                                   //| Var + Begin + Nueva_Asignacion_Variable + End + Pt_Coma
+                  /*Tiene Ambiguedad*/  | Var + Nueva_Asignacion_Variable
                                         ;
 
             /*Variables.ErrorRule
@@ -458,14 +457,14 @@ namespace _OLC2__Proyecto1.analizador
             Asignacion_Variable.Rule
                                         = Identificador + Ds_Pts + Tipo_Variable + Igual + Expresion_Cadena + Pt_Coma
                                         | Identificador + Ds_Pts + Tipo_Variable + Pt_Coma
-                                        | Identificador + Coma + Lista_Variables + Ds_Pts + Tipo_Variable + Pt_Coma      
+                                        | Identificador + Coma + Lista_Variables + Ds_Pts + Tipo_Variable + Pt_Coma
                                         ;
 
             Nueva_Asignacion_Constante.Rule
                                         = Identificador + Ds_Pts + Tipo_Variable + Igual + Expresion_Cadena + Pt_Coma + Nueva_Asignacion_Constante
                                         | Epsilon
                                         ;
-            
+
 
             Nueva_Asignacion_Variable.Rule
                                         = Asignacion_Variable + Nueva_Asignacion_Variablep
@@ -475,7 +474,7 @@ namespace _OLC2__Proyecto1.analizador
                                         = Nueva_Asignacion_Variable
                                         | Epsilon
                                         ;
-  
+
 
 
             Lista_Variables.Rule
@@ -495,32 +494,28 @@ namespace _OLC2__Proyecto1.analizador
                                         | Identificador
                                         ;
 
-            
+
 
             Expresion_Cadena.Rule
-                                        = Cadena + Expresion_Cadenap
+                                        = Expresion_Cadena + Mas + Expresion_Cadena
                                         | Expresion_Numerica
-                                        ;
-
-            Expresion_Cadenap.Rule
-                                        = Mas + Expresion_Cadena
-                                        | Epsilon
+                                        | Cadena
                                         ;
 
             Expresion_Numerica.Rule
-                                        = Valor + Expresion_Numericap
-                                        /*| Valor
-                                        | Epsilon*/
+                                        = Expresion_Numerica + Mas + Expresion_Numerica
+                                        | Expresion_Numerica + Menos + Expresion_Numerica
+                                        | Expresion_Numerica + Por + Expresion_Numerica
+                                        | Expresion_Numerica + Div + Expresion_Numerica
+                                        | Expresion_Numerica + Mod + Expresion_Numerica
+                                        | Entero
+                                        | Decimal
+                                        | Identificador
+                                        | Llamada
+                                        | Valor_Arreglo
                                         ;
 
-            Expresion_Numericap.Rule
-                                        = Mas + Valor + Expresion_Numericap
-                                        | Menos + Valor + Expresion_Numericap
-                                        | Por + Valor + Expresion_Numericap
-                                        | Div + Valor + Expresion_Numericap
-                                        | Mod + Valor + Expresion_Numericap
-                                        | Epsilon
-                                        ;
+            
 
             Valor.Rule
                                         = Entero
@@ -528,7 +523,7 @@ namespace _OLC2__Proyecto1.analizador
                                         | Identificador
                                         | Llamada
                                         | Valor_Arreglo
-                   /*Tiene Ambiguedad*/ // | Par_Izq + Expresion_Numerica + Par_Der + Expresion_Numericap
+                                        /*Tiene Ambiguedad*/ // | Par_Izq + Expresion_Numerica + Par_Der + Expresion_Numericap
                                         ;
 
 
@@ -543,9 +538,9 @@ namespace _OLC2__Proyecto1.analizador
                                         ;
 
             Expresion_Logica.Rule
-                                        = Expresion_Relacional + And + Expresion_Relacional
-                                        | Expresion_Relacional + Or + Expresion_Relacional
-                                        | Not + Expresion_Relacional 
+                                        = Expresion_Logica + And + Expresion_Logica
+                                        | Expresion_Logica + Or + Expresion_Logica
+                                        | Not + Expresion_Logica
                                         | Expresion_Relacional
                                         ;
 
@@ -587,12 +582,12 @@ namespace _OLC2__Proyecto1.analizador
             this.Root = Raiz;
             this.RegisterOperators(1, Associativity.Left, Mas, Menos);
             this.RegisterOperators(2, Associativity.Left, Por, Div);
-            this.RegisterOperators(3, Associativity.Left, Then, Else) ;
-            this.RegisterOperators(4, Associativity.Left, Var, Identificador);
-            this.RegisterOperators(5, Associativity.Left, End, Pt_Coma);
+            this.RegisterOperators(3, Associativity.Left, Mod);
+            this.RegisterOperators(4, Associativity.Left, Then, Else);
+            this.RegisterOperators(5, Associativity.Left, Var, Identificador);
+            this.RegisterOperators(6, Associativity.Left, End, Pt_Coma);
+            this.RegisterOperators(7, Associativity.Left, Or, And);
             #endregion
         }
-
-
     }
 }

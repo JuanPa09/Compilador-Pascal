@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace _OLC2__Proyecto1.traductor.instruccion
+namespace _OLC2__Proyecto1.interprete.instruccion
 {
     class Case
     {

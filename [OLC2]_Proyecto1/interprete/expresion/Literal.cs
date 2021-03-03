@@ -17,9 +17,19 @@ namespace _OLC2__Proyecto1.interprete.expresion
             this.valor = valor;
         }
 
-        public override Simbolo evaluar()
+        public override Simbolo evaluar(Entorno entorno)
         {
-            return new Simbolo(this.valor, new Tipo(Tipos.INT, null), null);
+            switch (tipo)
+            {
+                case 'N':
+                    return new Simbolo(this.valor, new Tipo(Tipos.NUMBER, null), null);
+                case 'D':
+                    return new Simbolo(this.valor, new Tipo(Tipos.DOUBLE, null), null);
+                case 'S':
+                    return new Simbolo(this.valor, new Tipo(Tipos.STRING, null), null);
+            }
+            return null;
         }
+
     }
 }

@@ -6,12 +6,13 @@ namespace _OLC2__Proyecto1.interprete.simbolo
 {
     public enum Tipos
     { 
-        INT = 0,
+        NUMBER = 0,
         STRING = 1,
         BOOLEAN = 2,
-        DOUBLE = 3,
-        OBJECT = 4,
-        ARRAY = 5
+        NULLL = 3,
+        ARRAY = 4,
+        OBJECT = 5,
+        DOUBLE = 6
 
     }
     class Tipo

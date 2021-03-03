@@ -111,15 +111,19 @@ namespace _OLC2__Proyecto1
             debuggerConsole.Text = "";
             Debug.WriteLine("Iniciando analizador!");
             debuggerConsole.AppendText("Iniciando Analizador!\n");
-            Analizador analizador = new Analizador(this.debuggerConsole);
-            analizador.analizar(CompiPascal.Text);
+            Analizador analizador = new Analizador(this.debuggerConsole,Consola);
+            analizador.traducir(CompiPascal.Text);
             debuggerConsole.AppendText("Finalizando Analizador!\n");
             Debug.WriteLine("Finalizando analizador!");
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Debug.WriteLine("Prueba");
+            debuggerConsole.AppendText("Iniciando Ejecucion!\n");
+            Analizador analizador = new Analizador(this.debuggerConsole,Consola);
+            analizador.analizar(CompiPascal.Text);
+            debuggerConsole.AppendText("Finalizando Ejecucion");
+            
         }
     }
 }

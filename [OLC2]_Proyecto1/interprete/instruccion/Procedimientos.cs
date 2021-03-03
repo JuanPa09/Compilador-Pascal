@@ -4,7 +4,7 @@ using System.Text;
 
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
-    class If
+    class Procedimientos
     {
     }
 }

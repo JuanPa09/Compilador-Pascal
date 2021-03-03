@@ -7,6 +7,6 @@ namespace _OLC2__Proyecto1.interprete.expresion
 {
     abstract class Expresion
     {
-        public abstract Simbolo evaluar();
+        public abstract Simbolo evaluar(Entorno entorno);
     }
 }

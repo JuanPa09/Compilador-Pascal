@@ -1,11 +1,22 @@
-﻿using System;
+﻿using _OLC2__Proyecto1.interprete.simbolo;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace _OLC2__Proyecto1.traductor
+namespace _OLC2__Proyecto1.interprete.instruccion
 {
-    abstract class Instrucciones
+    class Instrucciones : Instruccion
     {
-        public abstract object ejecutar();
+        LinkedList<Instruccion> instrucciones;
+
+        public Instrucciones(LinkedList<Instruccion> instrucciones)
+        {
+            this.instrucciones = instrucciones;
+        }
+
+        public override object ejecutar(Entorno entorno)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
