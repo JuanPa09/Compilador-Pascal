@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace _OLC2__Proyecto1.interprete
+namespace _OLC2__Proyecto1.interprete.util
 {
     class ErrorPascal : Exception
     {

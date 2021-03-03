@@ -102,14 +102,52 @@ namespace _OLC2__Proyecto1.analizador
                     if (actual.ChildNodes[0].ChildNodes[0].Token.Text == "writeln")
                         return new Write(consola,evaluarExpresionCadena(actual.ChildNodes[0].ChildNodes[2],actual.ChildNodes[0].ChildNodes[3]),1);
                     return new Write(consola, evaluarExpresionCadena(actual.ChildNodes[0].ChildNodes[2], actual.ChildNodes[0].ChildNodes[3]), 0);
+                case "If_Statement":
+                    return evaluarIf(actual.ChildNodes[0]);
+
 
             }
 
-            
-            return null;
-
-            
+            return null; 
         }
+
+        public Instruccion evaluarIf(ParseTreeNode actual)
+        {
+            LinkedList<Instruccion> instruccionSimple = new LinkedList<Instruccion>();
+            int cantidad = actual.ChildNodes.Count;
+            switch (cantidad) 
+            {
+                case 10:
+                    return new If(evaluarExpresionLogica(actual.ChildNodes[2]), instrucciones(actual.ChildNodes[6]), evaluarElse(actual.ChildNodes[8]));
+                case 8:
+                    return new If(evaluarExpresionLogica(actual.ChildNodes[1]), instrucciones(actual.ChildNodes[4]), evaluarElse(actual.ChildNodes[6]));
+                case 7:
+                    instruccionSimple.AddLast(instruccion(actual.ChildNodes[5]));
+                    return new If(evaluarExpresionLogica(actual.ChildNodes[2]), instruccionSimple, evaluarElse(actual.ChildNodes[6]));
+                default:
+                    instruccionSimple.AddLast(instruccion(actual.ChildNodes[3]));
+                    return new If(evaluarExpresionLogica(actual.ChildNodes[1]), instruccionSimple, evaluarElse(actual.ChildNodes[4]));
+            }
+        }
+
+        public LinkedList<Instruccion> evaluarElse(ParseTreeNode actual)
+        {
+            Debug.WriteLine("No Terminal Else "+actual.Term.ToString());
+            if (actual.ChildNodes.Count == 0)
+                return null;
+            int cantidad = actual.ChildNodes.Count;
+            switch (cantidad)
+            {
+                case 4:
+                    return instrucciones(actual.ChildNodes[2]);
+                default:
+                    // 1 Instruccion
+                    LinkedList<Instruccion> instruccion = new LinkedList<Instruccion>();
+                    instruccion.AddLast(this.instruccion(actual.ChildNodes[1]));
+                    return instruccion;
+            }
+        }
+
 
 
         public Expresion evaluarExpresionCadena(ParseTreeNode expresionCadena, ParseTreeNode masTexto)
@@ -194,6 +232,10 @@ namespace _OLC2__Proyecto1.analizador
                     return '+';
                 case "-":
                     return '-';
+                case "*":
+                    return '*';
+                case "/":
+                    return '/';
                 default:
                     return '%';
             }
@@ -215,6 +257,36 @@ namespace _OLC2__Proyecto1.analizador
             return 'E';
         }
 
+        public Expresion evaluarExpresionLogica(ParseTreeNode actual)
+        {
+            int cantidad = actual.ChildNodes.Count;
+            switch (cantidad)
+            {
+                case 3:
+                    // Llevan Or o And
+                    return null;
+                case 2:
+                    // Tiene operador Not
+                    return null;
+                case 1:
+                    // Tiene Expresion Relacional
+                    return evaluarExpresionRelacional(actual.ChildNodes[0]);
+            }
+            return null;
+        }
+
+        public Expresion evaluarExpresionRelacional(ParseTreeNode actual)
+        {
+            if(actual.ChildNodes.Count == 3)
+            {
+                //string operador = actual.ChildNodes[1].Token.Text;
+                return new Relacional(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), actual.ChildNodes[1].Token.Text);
+            }else
+            {
+                //Buscar Identificador (Pendiente)
+                return null;
+            }
+        }
 
         public Expresion evaluarExpresionNumerica(ParseTreeNode actual) {
             
@@ -236,6 +308,7 @@ namespace _OLC2__Proyecto1.analizador
                 }
             }else
             {
+                //Verificar el tipo y no solo poner la n porque pueden venir strings o bools
                 return new Literal('N',actual.ChildNodes[0].Token.Text);
             }
         

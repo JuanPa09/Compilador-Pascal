@@ -293,7 +293,11 @@ namespace _OLC2__Proyecto1.analizador
             Instruccion_Body.Rule
                                         = Writes
                                         | Asignacion
-                                        | Sentencia
+                                        | If_Statement
+                                        | Case_Statement
+                                        | For_Statement
+                                        | While_Statement
+                                        | Repeat_Statement
                                         | Llamada + Pt_Comas
                                         ;
 
