@@ -20,7 +20,7 @@ namespace _OLC2__Proyecto1.interprete.util
 
         public override string ToString()
         {
-            return "Se encontro error" + this.tipo + " en la linea " + this.linea + " y columna " + this.columna + "\n Mensaje: " + this.mensaje;
+            return "Se encontro error " + this.tipo + " en la linea " + this.linea + " y columna " + this.columna + "\n Mensaje: " + this.mensaje;
         }
 
     }

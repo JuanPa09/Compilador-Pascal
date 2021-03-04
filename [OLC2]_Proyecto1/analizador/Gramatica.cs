@@ -144,6 +144,7 @@ namespace _OLC2__Proyecto1.analizador
             NonTerminal Instrucciones_Ciclo = new NonTerminal("Instrucciones_Ciclo");
             NonTerminal Instruccion_Ciclo = new NonTerminal("Instruccion_Ciclo");
             NonTerminal Sentencias_Transferencia = new NonTerminal("Sentencias_Transferencia");
+            NonTerminal Cadenas = new NonTerminal("Cadenas");
             NonTerminal A = new NonTerminal("a");
             NonTerminal B = new NonTerminal("b");
             NonTerminal C = new NonTerminal("c");
@@ -502,6 +503,12 @@ namespace _OLC2__Proyecto1.analizador
                                         | Expresion_Numerica
                                         ;
 
+            Cadenas.Rule
+                                        = Cadena
+                                        | Identificador
+                                        | Llamada
+                                        ;
+
             Expresion_Cadenap.Rule
                                         = Mas + Expresion_Cadena
                                         | Epsilon
@@ -538,14 +545,15 @@ namespace _OLC2__Proyecto1.analizador
                                         | Expresion_Numerica + May_Ig_Que + Expresion_Numerica
                                         | Expresion_Numerica + Men_Ig_Que + Expresion_Numerica
                                         | Expresion_Numerica + No_Igual + Expresion_Numerica
-                                        | Expresion_Numerica + Igual + Expresion_Numerica
+                                        | Expresion_Cadena + Igual + Expresion_Cadena
                                         | Identificador
+                                        | Llamada
                                         ;
 
             Expresion_Logica.Rule
-                                        = Expresion_Relacional + And + Expresion_Relacional
-                                        | Expresion_Relacional + Or + Expresion_Relacional
-                                        | Not + Expresion_Relacional 
+                                        = Expresion_Relacional + And + Expresion_Logica
+                                        | Expresion_Relacional + Or + Expresion_Logica
+                                        | Not + Expresion_Logica
                                         | Expresion_Relacional
                                         ;
 
@@ -590,6 +598,7 @@ namespace _OLC2__Proyecto1.analizador
             this.RegisterOperators(3, Associativity.Left, Then, Else) ;
             this.RegisterOperators(4, Associativity.Left, Var, Identificador);
             this.RegisterOperators(5, Associativity.Left, End, Pt_Coma);
+            this.RegisterOperators(6, Associativity.Left, Not, And, Or);
             #endregion
         }
 

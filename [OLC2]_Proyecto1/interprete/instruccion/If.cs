@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using _OLC2__Proyecto1.interprete.expresion;
+using System.Diagnostics;
 
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
@@ -28,24 +29,28 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             //TODO verificar errores
             if (valor.tipo.tipo != Tipos.BOOLEAN)
                 throw new util.ErrorPascal(0, 0, "No es una expresion logica", "semantico");
-            
+
+            Entorno entornoIf = new Entorno(entorno);
             if (bool.Parse(valor.valor.ToString()))
             {
-                try
+                
+                foreach (Instruccion instruccion in instrucciones)
                 {
-                    foreach (var instruccion in instrucciones)
-                    {
-                        if (instruccion!=null)
-                            instruccion.ejecutar(entorno);
-                    }
-                }catch(Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
+                    //Entorno entornoIf = new Entorno(entorno);
+                    if (instruccion!=null)
+                        try
+                        {
+                            instruccion.ejecutar(entornoIf);
+                        }
+                        catch(Exception ex)
+                        {
+                            Debug.WriteLine(ex.ToString());
+                        }    
                 }
             }else
             {
                 if (_else != null)
-                    foreach (var instruccion in _else)
+                    foreach (Instruccion instruccion in _else)
                     {
                         if(instruccion!=null)
                             instruccion.ejecutar(entorno);

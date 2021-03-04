@@ -102,14 +102,59 @@ namespace _OLC2__Proyecto1.analizador
                     if (actual.ChildNodes[0].ChildNodes[0].Token.Text == "writeln")
                         return new Write(consola,evaluarExpresionCadena(actual.ChildNodes[0].ChildNodes[2],actual.ChildNodes[0].ChildNodes[3]),1);
                     return new Write(consola, evaluarExpresionCadena(actual.ChildNodes[0].ChildNodes[2], actual.ChildNodes[0].ChildNodes[3]), 0);
+                case "Variables":
+                    LinkedList<Instruccion> listaDeclaraciones = new LinkedList<Instruccion>();
+                    evaluarVariable(actual.ChildNodes[0].ChildNodes[1],ref listaDeclaraciones);
+                    return new DeclararVariable(listaDeclaraciones);
                 case "If_Statement":
                     return evaluarIf(actual.ChildNodes[0]);
+
 
 
             }
 
             return null; 
         }
+
+        /* ------------------------ Evaluacion Variables -------------------------- */
+
+        public LinkedList<Instruccion> evaluarVariable(ParseTreeNode actual, ref LinkedList<Instruccion> listaDeclaraciones)
+        {
+            Debug.WriteLine("nodo -> "+actual.Term.ToString());
+            //Estoy en var Nueva_Asignacion_variable
+            if (actual.ChildNodes.Count==0)
+                return null;
+
+            
+            //Ir a Asignacion Variable
+            listaDeclaraciones.AddLast(declaracionVariable(actual.ChildNodes[0],ref listaDeclaraciones));
+
+            if (actual.ChildNodes[1].ChildNodes.Count != 0)
+                evaluarVariable(actual.ChildNodes[1],ref listaDeclaraciones);
+            return null;
+        }
+
+        public Instruccion declaracionVariable(ParseTreeNode actual, ref LinkedList<Instruccion> listaDeclaraciones)
+        {
+            // Estoy en ID : Tipo ......
+            int cantidad = actual.ChildNodes.Count;
+
+            switch (cantidad)
+            {
+                case 4:
+                    listaDeclaraciones.AddLast(new NuevaDeclaracion(null,actual.ChildNodes[0].Token.Text,getTipo(actual.ChildNodes[2])));
+                    break;
+                case 6:
+                    if (actual.ChildNodes[1].Token.ToString() != ",")
+                        listaDeclaraciones.AddLast(new NuevaDeclaracion(expresionCadena(actual.ChildNodes[4]), actual.ChildNodes[0].Token.Text, getTipo(actual.ChildNodes[2])));
+                    break;
+            }
+            return null;
+
+        }
+
+
+        /* ---------------------------------- Evaluaciones Sentencias De Control ----------------------------------- */
 
         public Instruccion evaluarIf(ParseTreeNode actual)
         {
@@ -149,6 +194,7 @@ namespace _OLC2__Proyecto1.analizador
         }
 
 
+        /* ------------------------ EVALUACION EXPRESIONES ------------------------ */
 
         public Expresion evaluarExpresionCadena(ParseTreeNode expresionCadena, ParseTreeNode masTexto)
         {
@@ -157,104 +203,54 @@ namespace _OLC2__Proyecto1.analizador
             Expresion MasTexto = null;
             MasTexto = this.masTexto(masTexto);
 
-            if(MasTexto!=null)
+            if (MasTexto != null)
             {
                 return new Aritmetica(ExpresionCadena, MasTexto, '+');
-            }else
+            }
+            else
             {
                 return ExpresionCadena;
             }
-
-
         }
 
-
-        public Expresion expresionCadena(ParseTreeNode expresionCadena)
+        public Expresion evaluarExpresionNumerica(ParseTreeNode actual)
         {
-            if (expresionCadena.ChildNodes.Count == 1)
-            {
-                if (expresionCadena.ChildNodes[0].Term.ToString() != "Expresion_Numerica")
-                {
-                    //Sintetizar
-                    return new Literal(Literales(expresionCadena), expresionCadena.ChildNodes[0].Token.Text);
-                }
-                else
-                {
-                    //Es una expresion Numerica
-                    return evaluarExpresionNumerica(expresionCadena.ChildNodes[0]);
-                }
-            }else
-            {
-                //Tiene 3 nodos (Expresion_Cadena Simbolo(+,-...) Expresion_Cadena
-                Expresion ExpresionCadena1 = null;
-                Expresion ExpresionCadena2 = null;
 
-                ExpresionCadena1 = this.expresionCadena(expresionCadena.ChildNodes[0]);
-                ExpresionCadena2 = this.expresionCadena(expresionCadena.ChildNodes[2]);
-
-                if(ExpresionCadena1 != null && ExpresionCadena2 != null)
+            if (actual.ChildNodes.Count == 3)
+            {
+                string operador = actual.ChildNodes[1].Token.Text;
+                switch (operador)
                 {
-                    return new Aritmetica(ExpresionCadena1,ExpresionCadena2,getSignoAritmetica(expresionCadena.ChildNodes[1]));
-                }else
-                {
-                    return ExpresionCadena1;
+                    case "+":
+                        return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '+');
+                    case "-":
+                        return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '-');
+                    case "*":
+                        return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '*');
+                    case "/":
+                        return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '/');
+                    default:
+                        return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '%');
                 }
             }
-        }
-
-        public Expresion masTexto(ParseTreeNode actual)
-        {
-            if (actual.ChildNodes.Count==0)
+            else
             {
-                return null;
-            }else
-            {
-                //Tiene 3 hijos (, Expresion_Cadena Mas_Texto)
-                Expresion expresionCadena =  this.expresionCadena(actual.ChildNodes[1]);
-                Expresion masTexto = this.masTexto(actual.ChildNodes[2]);
+                Debug.WriteLine(actual.ChildNodes[0].Term.ToString());
+                //Verificar el tipo y no solo poner la n porque pueden venir strings o bools
+                switch (actual.ChildNodes[0].Term.ToString())
+                {
+                    case "DOUBLE":
+                        return new Literal('D', actual.ChildNodes[0].Token.Text);
 
-                if (expresionCadena!=null && masTexto !=null)
-                {
-                    return new Aritmetica(expresionCadena, masTexto, '+');
-                }else
-                {
-                    return expresionCadena;
+                    case "ID":
+                        return new ObtenerVariable(actual.ChildNodes[0].Token.Text);
+
+                    default:
+                        // Es INT
+                        return new Literal('N', actual.ChildNodes[0].Token.Text);
                 }
-
-            }
-        }
-
-        public char getSignoAritmetica(ParseTreeNode actual)
-        {
-            switch(actual.Token.Text)
-            {
-                case "+":
-                    return '+';
-                case "-":
-                    return '-';
-                case "*":
-                    return '*';
-                case "/":
-                    return '/';
-                default:
-                    return '%';
-            }
-        }
-      
-
-        public char Literales(ParseTreeNode actual)
-        {
-            switch(actual.ChildNodes[0].Term.ToString())
-            {
                 
-
-                case "INT":
-                    return 'N';
-
-                case "CADENA":
-                    return 'S';
             }
-            return 'E';
         }
 
         public Expresion evaluarExpresionLogica(ParseTreeNode actual)
@@ -277,53 +273,139 @@ namespace _OLC2__Proyecto1.analizador
 
         public Expresion evaluarExpresionRelacional(ParseTreeNode actual)
         {
-            if(actual.ChildNodes.Count == 3)
+            if (actual.ChildNodes.Count == 3)
             {
-                //string operador = actual.ChildNodes[1].Token.Text;
-                return new Relacional(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), actual.ChildNodes[1].Token.Text);
-            }else
+                //string operador = actual.ChildNodes[1].Toke
+                if (actual.ChildNodes[0].Term.ToString() == "Expresion_Numerica")
+                    return new Relacional(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), actual.ChildNodes[1].Token.Text);             
+                return new Relacional(expresionCadena(actual.ChildNodes[0]), expresionCadena(actual.ChildNodes[2]), actual.ChildNodes[1].Token.Text);
+                
+            }
+            else
             {
                 //Buscar Identificador (Pendiente)
                 return null;
             }
         }
 
-        public Expresion evaluarExpresionNumerica(ParseTreeNode actual) {
-            
-            if(actual.ChildNodes.Count == 3)
+        /* ------------------------ Otras Evaluaciones ----------------------------- */
+
+        public Expresion expresionCadena(ParseTreeNode expresionCadena)
+        {
+            if (expresionCadena.ChildNodes.Count == 1)
             {
-                string operador = actual.ChildNodes[1].Token.Text;
-                switch (operador)
+                if (expresionCadena.ChildNodes[0].Term.ToString() != "Expresion_Numerica")
                 {
-                    case "+":
-                        return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '+');
-                    case "-":
-                        return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '-');
-                    case "*":
-                        return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '*');
-                    case "/":
-                        return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '/');
-                    default:
-                        return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '%');
+                    //Sintetizar
+                    return new Literal(Literales(expresionCadena), expresionCadena.ChildNodes[0].Token.Text);
                 }
-            }else
-            {
-                //Verificar el tipo y no solo poner la n porque pueden venir strings o bools
-                return new Literal('N',actual.ChildNodes[0].Token.Text);
+                else
+                {
+                    //Es una expresion Numerica
+                    return evaluarExpresionNumerica(expresionCadena.ChildNodes[0]);
+                }
             }
-        
+            else
+            {
+                //Tiene 3 nodos (Expresion_Cadena Simbolo(+,-...) Expresion_Cadena
+                Expresion ExpresionCadena1 = null;
+                Expresion ExpresionCadena2 = null;
+
+                ExpresionCadena1 = this.expresionCadena(expresionCadena.ChildNodes[0]);
+                ExpresionCadena2 = this.expresionCadena(expresionCadena.ChildNodes[2]);
+
+                if (ExpresionCadena1 != null && ExpresionCadena2 != null)
+                {
+                    return new Aritmetica(ExpresionCadena1, ExpresionCadena2, getSignoAritmetica(expresionCadena.ChildNodes[1]));
+                }
+                else
+                {
+                    return ExpresionCadena1;
+                }
+            }
+        }
+
+        public Expresion masTexto(ParseTreeNode actual)
+        {
+            if (actual.ChildNodes.Count == 0)
+            {
+                return null;
+            }
+            else
+            {
+                //Tiene 3 hijos (, Expresion_Cadena Mas_Texto)
+                Expresion expresionCadena = this.expresionCadena(actual.ChildNodes[1]);
+                Expresion masTexto = this.masTexto(actual.ChildNodes[2]);
+
+                if (expresionCadena != null && masTexto != null)
+                {
+                    return new Aritmetica(expresionCadena, masTexto, '+');
+                }
+                else
+                {
+                    return expresionCadena;
+                }
+
+            }
+        }
+
+        /* ------------------------ GETS ---------------------------*/
+
+        public char getSignoAritmetica(ParseTreeNode actual)
+        {
+            switch (actual.Token.Text)
+            {
+                case "+":
+                    return '+';
+                case "-":
+                    return '-';
+                case "*":
+                    return '*';
+                case "/":
+                    return '/';
+                default:
+                    return '%';
+            }
+        }
+
+        public Tipos getTipo(ParseTreeNode actual)
+        {
+            Debug.WriteLine(actual.ChildNodes[0].Term.ToString());
+            Debug.WriteLine(actual.ChildNodes[0].Token.ToString());
+            switch(actual.ChildNodes[0].Term.ToString())
+            {
+                case "integer":
+                    return Tipos.NUMBER;
+                case "string":
+                    return Tipos.STRING;
+                default:
+                    return Tipos.NULLL;
+            }
+        }
+
+        public char Literales(ParseTreeNode actual)
+        {
+            switch (actual.ChildNodes[0].Term.ToString())
+            {
+
+
+                case "INT":
+                    return 'N';
+
+                case "CADENA":
+                    return 'S';
+            }
+            return 'E';
         }
 
 
-        
-
-
-       
 
 
 
 
-       
+
+
+
 
 
 

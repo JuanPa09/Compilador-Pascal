@@ -24,7 +24,6 @@ namespace _OLC2__Proyecto1.interprete.expresion
         {
             Simbolo izquierda = this.izquierda.evaluar(entorno);
             Simbolo derecha = this.derecha.evaluar(entorno);
-            Simbolo resultado;
             Tipo tipo = new Tipo(Tipos.BOOLEAN, null);
 
             Tipos tipoResultante = util.TablaTipos.getTipo(izquierda.tipo,derecha.tipo);
@@ -34,6 +33,8 @@ namespace _OLC2__Proyecto1.interprete.expresion
             switch (tipoOperacion)
             {
                 case "=":
+                    if (izquierda.tipo.tipo == Tipos.STRING || izquierda.tipo.tipo == Tipos.STRING)
+                        return new Simbolo(izquierda.ToString() == derecha.ToString(), tipo, null);
                     return new Simbolo(double.Parse(izquierda.ToString()) == double.Parse(derecha.ToString()), tipo, null);
                 case "<>":
                     return new Simbolo(double.Parse(izquierda.ToString()) != double.Parse(derecha.ToString()), tipo, null);

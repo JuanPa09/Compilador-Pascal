@@ -6,7 +6,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
 {
     class Entorno
     {
-        Dictionary<string, Simbolo> variables;
+        Dictionary<string, Simbolo> variables = new Dictionary<string,Simbolo>();
         Dictionary<string, object> funciones;
         Dictionary<string, object> structs;
         Entorno padre;
@@ -19,13 +19,13 @@ namespace _OLC2__Proyecto1.interprete.simbolo
 
         public void declararVariables(string id, Simbolo variable)
         {
-            if (this.variables[id] != null)
+            if (variables.Count==0 || !variables.ContainsKey(id))
             {
                 this.variables.Add(id, variable);
             }
             else
             {
-                throw new Exception("La variable " + id + "ya existe en este ambito");
+                throw new util.ErrorPascal(0,0,"La variable \"" + id + "\" ya existe en este ambito","semántico");
             }
         }
 
@@ -34,11 +34,13 @@ namespace _OLC2__Proyecto1.interprete.simbolo
             Entorno actual = this;
             while(actual!=null)
             {
-                if(actual.variables[id]!=null)
+                if(variables.ContainsKey(id))
                     return actual.variables[id];
                 actual = actual.padre;              //Busca de padre en padre
             }
-            return null;
+            throw new util.ErrorPascal(0,0,"No se puede obtener el valor de la variable \"" + id + "\" porque no esta declarada","Semantico");
+            //return null;
+
         }
 
         public bool existeVariable(string id)

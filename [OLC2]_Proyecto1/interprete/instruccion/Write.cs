@@ -24,17 +24,28 @@ namespace _OLC2__Proyecto1.interprete.instruccion
         public override object ejecutar(Entorno entorno)
         {
             Debug.WriteLine("Ejecutando Write");
-
-            Simbolo valor = this.valor.evaluar(entorno);
-            switch (tipo) 
+            try
             {
-                case 0:
-                    consola.AppendText(valor.valor.ToString());
-                    break ;
-                case 1:
-                    consola.AppendText(valor.valor.ToString()+"\n");
-                    break;
-            }
+                Simbolo valor = this.valor.evaluar(entorno);
+                switch (tipo)
+                {
+                    case 0:
+                        try
+                        {
+                            consola.AppendText(valor.valor.ToString());
+                        }
+                        catch (Exception ex) { Debug.WriteLine(ex.ToString()); }
+                        break;
+                    case 1:
+                        try
+                        {
+                            consola.AppendText(valor.valor.ToString() + "\n");
+                        }
+                        catch (Exception ex) { Debug.WriteLine(ex.ToString()); }
+                        break;
+                }
+            }catch( Exception ex) { Debug.WriteLine(ex.ToString()); }
+            
             return null;
         }
     }

@@ -8,8 +8,8 @@ namespace _OLC2__Proyecto1.interprete.expresion
     class Literal : Expresion
     {
 
-        private char tipo;
-        private object valor;
+        public char tipo;
+        public object valor;
 
         public Literal(char tipo,object valor) 
         {
@@ -26,10 +26,13 @@ namespace _OLC2__Proyecto1.interprete.expresion
                 case 'D':
                     return new Simbolo(this.valor, new Tipo(Tipos.DOUBLE, null), null);
                 case 'S':
+                    this.valor = this.valor.ToString().Replace("'","");
                     return new Simbolo(this.valor, new Tipo(Tipos.STRING, null), null);
             }
             return null;
         }
+
+        
 
     }
 }

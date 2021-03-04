@@ -473,11 +473,15 @@ namespace _OLC2__Proyecto1.analizador
             Nueva_Asignacion_Variable.Rule
                                         = Asignacion_Variable + Nueva_Asignacion_Variablep
                                         ;
+                                        
+
 
             Nueva_Asignacion_Variablep.Rule
                                         = Nueva_Asignacion_Variable
                                         | Epsilon
                                         ;
+
+            
 
 
 
@@ -537,8 +541,9 @@ namespace _OLC2__Proyecto1.analizador
                                         | Expresion_Numerica + May_Ig_Que + Expresion_Numerica
                                         | Expresion_Numerica + Men_Ig_Que + Expresion_Numerica
                                         | Expresion_Numerica + No_Igual + Expresion_Numerica
-                                        | Expresion_Numerica + Igual + Expresion_Numerica
+                                        | Expresion_Cadena + Igual + Expresion_Cadena
                                         | Identificador
+                                        | Llamada
                                         ;
 
             Expresion_Logica.Rule

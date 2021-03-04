@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Diagnostics;
 
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
@@ -21,13 +22,22 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             foreach (var instruccion in instruccionesHead)
             {
                 if (instruccion != null)
-                    instruccion.ejecutar(entorno);
+                    try
+                    {
+                        instruccion.ejecutar(entorno);
+                    }
+                    catch( Exception ex) { Debug.WriteLine(ex.ToString()); }
+                    
             }
 
             foreach (var instruccion in instruccionesBody)
             {
                 if (instruccion != null)
-                    instruccion.ejecutar(entorno);
+                    try
+                    {
+                        instruccion.ejecutar(entorno);
+                    }
+                    catch (Exception ex) { Debug.WriteLine(ex.ToString()); }
             }
 
 
