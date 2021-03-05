@@ -77,6 +77,8 @@ namespace _OLC2__Proyecto1.analizador
             var Of = ToTerm("of");
             var Break = ToTerm("break");
             var Continue = ToTerm("continue");
+            var True = ToTerm("true");
+            var False = ToTerm("false");
             var Epsilon = this.Empty;
             NonGrammarTerminals.Add(Comentario_Simple);
             NonGrammarTerminals.Add(Comentario_Multi1);
@@ -124,7 +126,7 @@ namespace _OLC2__Proyecto1.analizador
             NonTerminal Case_Else_Statement = new NonTerminal("Case_Else_Statement");
             NonTerminal Cases_Statement = new NonTerminal("Cases_Statement");
             NonTerminal Cases_Statementp = new NonTerminal("Cases_Statementp");
-            NonTerminal Repeat_Statement = new NonTerminal("Repeat_Satement");
+            NonTerminal Repeat_Statement = new NonTerminal("Repeat_Statement");
             NonTerminal Declaraciones_Type = new NonTerminal("Declaraciones_Type");
             NonTerminal Types = new NonTerminal("Types");
             NonTerminal Objeto = new NonTerminal("Objeto");
@@ -386,7 +388,8 @@ namespace _OLC2__Proyecto1.analizador
                                         ;
 
             Case_Statement.Rule
-                                        = Case + Par_Izq + Expresion_Logica + Par_Der + Of + Cases_Statement + End + Pt_Coma
+                                        = Case + Par_Izq + Expresion_Cadena + Par_Der + Of + Cases_Statement + End + Pt_Coma
+                                        | Case + Expresion_Cadena + Of + Cases_Statement + End + Pt_Coma
                                         ;
 
             /*Cases_Statement.ErrorRule
@@ -419,7 +422,7 @@ namespace _OLC2__Proyecto1.analizador
                                         ;*/
 
             For_Statement.Rule
-                                        = For + Identificador + Ds_Pts + Igual + Valor + To + Valor + Do + Begin + Instrucciones_Ciclo + End + Pt_Coma
+                                        = For + Identificador + Ds_Pts + Igual + Expresion_Numerica + To + Expresion_Numerica + Do + Begin + Instrucciones_Bodyp + End + Pt_Coma
                                         ;
 
             /*For_Statement.ErrorRule
@@ -427,8 +430,8 @@ namespace _OLC2__Proyecto1.analizador
                                         ;*/
 
             While_Statement.Rule
-                                        = While + Expresion_Logica + Do + Begin + Instrucciones_Ciclo + End + Pt_Coma
-                                        | While + Par_Izq + Expresion_Logica + Par_Der + Do + Begin + Instrucciones_Ciclo + End + Pt_Coma
+                                        = While + Expresion_Logica + Do + Begin + Instrucciones_Bodyp + End + Pt_Coma
+                                        | While + Par_Izq + Expresion_Logica + Par_Der + Do + Begin + Instrucciones_Bodyp + End + Pt_Coma
                                         ;
 
             /*While_Statement.ErrorRule
@@ -437,7 +440,7 @@ namespace _OLC2__Proyecto1.analizador
 
 
             Repeat_Statement.Rule
-                                        = Repeat + Instrucciones_Ciclo + Until + Expresion_Logica + Pt_Coma
+                                        = Repeat + Instrucciones_Bodyp + Until + Expresion_Logica + Pt_Coma
                                         ;
 
             /*Repeat_Statement.ErrorRule

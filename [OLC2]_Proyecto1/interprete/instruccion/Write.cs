@@ -32,6 +32,8 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                     case 0:
                         try
                         {
+                            if (valor.valor == null)
+                                throw new util.ErrorPascal(0, 0, "La variable \"" + valor.id + "\" no tiene valor", "semántico");
                             consola.AppendText(valor.valor.ToString());
                         }
                         catch (Exception ex) { Debug.WriteLine(ex.ToString()); }
@@ -39,6 +41,8 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                     case 1:
                         try
                         {
+                            if (valor.valor == null)
+                                throw new util.ErrorPascal(0,0,"La variable \""+valor.id+"\" no tiene valor","semántico");
                             consola.AppendText(valor.valor.ToString() + "\n");
                         }
                         catch (Exception ex) { Debug.WriteLine(ex.ToString()); }

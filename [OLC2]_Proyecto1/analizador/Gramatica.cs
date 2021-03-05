@@ -78,6 +78,8 @@ namespace _OLC2__Proyecto1.analizador
             var Of = ToTerm("of");
             var Break = ToTerm("break");
             var Continue = ToTerm("continue");
+            var True = ToTerm("true");
+            var False = ToTerm("false");
             var Epsilon = this.Empty;
             NonGrammarTerminals.Add(Comentario_Simple);
             NonGrammarTerminals.Add(Comentario_Multi1);
@@ -384,7 +386,8 @@ namespace _OLC2__Proyecto1.analizador
                                         ;
 
             Case_Statement.Rule
-                                        = Case + Par_Izq + Expresion_Logica + Par_Der + Of + Cases_Statement + End + Pt_Coma
+                                        = Case + Par_Izq + Expresion_Cadena + Par_Der + Of + Cases_Statement + End + Pt_Coma
+                                        | Case + Expresion_Cadena + Of + Cases_Statement + End + Pt_Coma
                                         ;
 
             /*Cases_Statement.ErrorRule
@@ -417,7 +420,7 @@ namespace _OLC2__Proyecto1.analizador
                                         ;*/
 
             For_Statement.Rule
-                                        = For + Identificador + Ds_Pts + Igual + Valor + To + Valor + Do + Begin + Instrucciones_Ciclo + End + Pt_Coma
+                                        = For + Identificador + Ds_Pts + Igual + Expresion_Numerica + To + Expresion_Numerica + Do + Begin + Instrucciones_Ciclo + End + Pt_Coma
                                         ;
 
             /*For_Statement.ErrorRule

@@ -20,6 +20,8 @@ namespace _OLC2__Proyecto1.interprete.simbolo
 
         public override string ToString()
         {
+            if (valor == null)
+                throw new util.ErrorPascal(0,0,"La variable \""+id+"\" no tiene valor","semántico");
             return this.valor.ToString();
         }
 
