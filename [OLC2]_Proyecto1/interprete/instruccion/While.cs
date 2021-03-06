@@ -36,7 +36,16 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                             if (instruccion != null)
                                 try
                                 {
-                                    instruccion.ejecutar(entornoWhile);
+                                    object retorno = instruccion.ejecutar(entornoWhile);
+                                    if (retorno != null)
+                                        if (retorno.ToString() == "break")
+                                        {
+                                            goto Fin;
+                                        }
+                                        else if (retorno.ToString() == "continue")
+                                        {
+                                            goto Continuar;
+                                        }
                                 }
                                 catch (Exception ex) { ex.ToString(); }
                         }
@@ -45,9 +54,10 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                     {
                         break;
                     }
-
+                    Continuar:;
                 }
             }catch(Exception ex) { ex.ToString(); }
+            Fin:;
             return null;
         }
     }

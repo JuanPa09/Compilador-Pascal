@@ -37,21 +37,37 @@ namespace _OLC2__Proyecto1.interprete.instruccion
 
                 while (inicio != final)
                 {
-                    try
+
+                    foreach (Instruccion instruccion in instrucciones)
                     {
-                        foreach (Instruccion instruccion in instrucciones)
-                        {
-                            instruccion.ejecutar(entornoFor);
-                        }
-                    }catch( Exception ex) { ex.ToString(); }
+                        if (instruccion != null)
+                            try
+                            {
+                                object retorno = instruccion.ejecutar(entornoFor);
+                                if (retorno != null)
+                                    if (retorno.ToString() == "break")
+                                    {
+                                        goto Fin;
+                                    }
+                                    else if (retorno.ToString() == "continue")
+                                    {
+                                        goto Continuar;
+                                    }
+                            }
+                            catch (Exception ex) { ex.ToString(); }
+                    }
+
+                    Continuar:;
                     inicio++;
                     entornoFor.modificarVariable(id, inicio,Tipos.NUMBER);
                     if (inicio > final)
                         throw new Exception("Error en for");
+
                 }
 
 
             }catch (Exception ex ) { ex.ToString(); }
+            Fin:
             return null;
         }
     }

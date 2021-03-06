@@ -299,6 +299,8 @@ namespace _OLC2__Proyecto1.analizador
                                         | Asignacion
                                         | Sentencia
                                         | Llamada + Pt_Comas
+                                        | Break + Pt_Comas
+                                        | Continue + Pt_Comas
                                         ;
 
             /*Instruccion_Body.ErrorRule
@@ -323,7 +325,7 @@ namespace _OLC2__Proyecto1.analizador
 
 
             Funcion.Rule
-                                        = Function + Identificador + Par_Izq + Parametros_Asignacion + Par_Der + Ds_Pts + Tipo_Variable + Pt_Coma + Instrucciones_Headp + Begin + Instrucciones_Funcion + End + Pt_Coma
+                                        = Function + Identificador + Par_Izq + Parametros_Asignacion + Par_Der + Ds_Pts + Tipo_Variable + Pt_Coma + Instrucciones_Headp + Begin + Instrucciones_Bodyp + End + Pt_Coma
                                         | Function + Identificador + Ds_Pts + Tipo_Variable + Pt_Coma + Instrucciones_Headp + Begin + Instrucciones_Funcion + End + Pt_Coma
                                         ;
 
@@ -420,7 +422,7 @@ namespace _OLC2__Proyecto1.analizador
                                         ;*/
 
             For_Statement.Rule
-                                        = For + Identificador + Ds_Pts + Igual + Expresion_Numerica + To + Expresion_Numerica + Do + Begin + Instrucciones_Ciclo + End + Pt_Coma
+                                        = For + Identificador + Ds_Pts + Igual + Expresion_Numerica + To + Expresion_Numerica + Do + Begin + Instrucciones_Bodyp + End + Pt_Coma
                                         ;
 
             /*For_Statement.ErrorRule
@@ -538,7 +540,9 @@ namespace _OLC2__Proyecto1.analizador
                                         | Identificador
                                         | Llamada
                                         | Valor_Arreglo
-                   /*Tiene Ambiguedad*/ // | Par_Izq + Expresion_Numerica + Par_Der + Expresion_Numericap
+                                        | True
+                                        | False
+                                        /*Tiene Ambiguedad*/ // | Par_Izq + Expresion_Numerica + Par_Der + Expresion_Numericap
                                         ;
 
 

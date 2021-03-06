@@ -22,9 +22,11 @@ namespace _OLC2__Proyecto1.interprete.expresion
 
         public override Simbolo evaluar(Entorno entorno)
         {
-            Simbolo izquierda = this.izquierda.evaluar(entorno);
-            Simbolo derecha = this.derecha.evaluar(entorno);
             Tipo tipo = new Tipo(Tipos.BOOLEAN, null);
+            Simbolo izquierda = this.izquierda.evaluar(entorno);
+            if (this.derecha == null)
+                return getValor(izquierda);
+            Simbolo derecha = this.derecha.evaluar(entorno);
 
             Tipos tipoResultante = util.TablaTipos.getTipo(izquierda.tipo,derecha.tipo);
             if (tipoResultante == Tipos.NULLL)
@@ -48,6 +50,13 @@ namespace _OLC2__Proyecto1.interprete.expresion
                     return new Simbolo(double.Parse(izquierda.ToString()) < double.Parse(derecha.ToString()), tipo, null);
                 default:
                     return null;
+            }
+
+            Simbolo getValor(Simbolo izquierda)
+            {
+                if (izquierda.tipo.tipo != Tipos.BOOLEAN)
+                    throw new util.ErrorPascal(0, 0, "La entrada no es de tipo booleano", "semántico");
+                return new Simbolo(bool.Parse(izquierda.ToString())==true,tipo,null);
             }
 
         }

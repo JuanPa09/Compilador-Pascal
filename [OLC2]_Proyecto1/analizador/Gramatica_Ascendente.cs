@@ -301,6 +301,8 @@ namespace _OLC2__Proyecto1.analizador
                                         | While_Statement
                                         | Repeat_Statement
                                         | Llamada + Pt_Comas
+                                        | Break + Pt_Comas
+                                        | Continue + Pt_Comas
                                         ;
 
             /*Instruccion_Body.ErrorRule
@@ -524,6 +526,8 @@ namespace _OLC2__Proyecto1.analizador
                                         | Identificador
                                         | Llamada
                                         | Valor_Arreglo
+                                        | True
+                                        | False
                                         ;
 
             
@@ -534,6 +538,8 @@ namespace _OLC2__Proyecto1.analizador
                                         | Identificador
                                         | Llamada
                                         | Valor_Arreglo
+                                        | True
+                                        | False
                                         /*Tiene Ambiguedad*/ // | Par_Izq + Expresion_Numerica + Par_Der + Expresion_Numericap
                                         ;
 

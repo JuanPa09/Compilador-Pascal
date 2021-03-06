@@ -40,7 +40,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                     {
                         try
                         {
-                            instruccion.ejecutar(entornoCasos);
+                            return instruccion.ejecutar(entornoCasos);
                         }
                         catch (Exception ex) { Debug.WriteLine(ex.ToString()); }
                     }
@@ -51,7 +51,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 {
                     try
                     {
-                        instruccion.ejecutar(entornoCasos);
+                        return instruccion.ejecutar(entornoCasos);
                     }
                     catch (Exception ex) { Debug.WriteLine(ex.ToString()); }
                 }

@@ -120,6 +120,10 @@ namespace _OLC2__Proyecto1.analizador
                     return new Repeat(evaluarExpresionLogica(actual.ChildNodes[3]), instrucciones(actual.ChildNodes[1]));
                 case "Case_Statement":
                     return evaluarCase(actual.ChildNodes[0]);
+                case "break":
+                    return new Break();
+                case "continue":
+                    return new Continue();
                 
 
 
@@ -379,6 +383,10 @@ namespace _OLC2__Proyecto1.analizador
                         return null;
                     case "Valor_Arreglo":
                         return null;
+                    case "true":
+                        return new Literal('T', true);
+                    case "false":
+                        return new Literal('F',false);
                     default:
                         // Es INT
                         return new Literal('N', actual.ChildNodes[0].Token.Text);
@@ -418,14 +426,10 @@ namespace _OLC2__Proyecto1.analizador
             else
             {
                 //Buscar Identificador (Pendiente)
-                return null;
+                return new Relacional(new ObtenerVariable(actual.ChildNodes[0].Token.Text),null,"unica");
             }
         }
 
-        public Expresion evaluarExpresionRelacionalMultiple(ParseTreeNode actual)
-        {
-            return null;
-        }
 
         /* ------------------------ Otras Evaluaciones ----------------------------- */
 
@@ -516,6 +520,8 @@ namespace _OLC2__Proyecto1.analizador
                     return Tipos.NUMBER;
                 case "string":
                     return Tipos.STRING;
+                case "boolean":
+                    return Tipos.BOOLEAN;
                 default:
                     return Tipos.NULLL;
             }
@@ -532,6 +538,11 @@ namespace _OLC2__Proyecto1.analizador
 
                 case "CADENA":
                     return 'S';
+
+                case "true":
+                    return 'T';
+                case "false":
+                    return 'F';
             }
             return 'E';
         }

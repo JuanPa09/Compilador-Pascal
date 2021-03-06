@@ -40,7 +40,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                     if (instruccion!=null)
                         try
                         {
-                            instruccion.ejecutar(entornoIf);
+                            return instruccion.ejecutar(entornoIf);
                         }
                         catch(Exception ex)
                         {
@@ -53,7 +53,11 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                     foreach (Instruccion instruccion in _else)
                     {
                         if(instruccion!=null)
-                            instruccion.ejecutar(entorno);
+                            try
+                            {
+                                return instruccion.ejecutar(entorno);
+                            }
+                            catch(Exception ex) { Debug.WriteLine(ex.ToString()); }
                     }
 
             }
