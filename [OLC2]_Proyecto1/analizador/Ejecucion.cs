@@ -372,10 +372,11 @@ namespace _OLC2__Proyecto1.analizador
                         paramsValor.Add(variable, new NuevaDeclaracion(null,variable,tipoVar));
                         orden.Add(pos, variable);
                         paramsTipos.AddLast(tipoVar);
+                        pos++;
                     }
                     if (actual.ChildNodes[3].ChildNodes.Count == 0)
                         return;
-                    parametrosFuncion(actual.ChildNodes[3].ChildNodes[1],ref paramsValor, ref paramsRef, ref paramsTipos,ref orden , pos+1);
+                    parametrosFuncion(actual.ChildNodes[3].ChildNodes[1],ref paramsValor, ref paramsRef, ref paramsTipos,ref orden , pos);
                     return;
                 case 5:
                     paramsRef.Add(actual.ChildNodes[1].Token.Text,new NuevaDeclaracion(null,actual.ChildNodes[1].Token.Text,getTipo(actual.ChildNodes[3])));
