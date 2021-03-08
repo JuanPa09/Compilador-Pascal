@@ -2,26 +2,23 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using _OLC2__Proyecto1.interprete.instruccion;
 
 namespace _OLC2__Proyecto1.interprete.expresion
 {
-    class ObtenerVariable : Expresion
+    class ObtenerLlamada : Expresion
     {
-        private string id;
 
-        public ObtenerVariable(string id)
-        {
-            this.id = id;
-        }
+        Instruccion llamada;
 
-        public string getId()
+        public ObtenerLlamada(Instruccion llamada)
         {
-            return this.id;
+            this.llamada = llamada;
         }
 
         public override Simbolo evaluar(Entorno entorno)
         {
-            return entorno.obtenerVariable(id);
+            return (Simbolo)llamada.ejecutar(entorno);
         }
     }
 }

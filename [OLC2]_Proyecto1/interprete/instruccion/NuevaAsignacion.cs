@@ -27,7 +27,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
 
                 if (valor.valor == null)
                     throw new util.ErrorPascal(0,0,"La variable \""+valor.id+"\" no tiene valor asignado","semántico");
-                entornoVariable.modificarVariable(id, valor.valor, valor.tipo.tipo);
+                return entornoVariable.modificarVariable(id, valor.valor, valor.tipo.tipo);
             }
             catch (Exception ex) { Debug.WriteLine(ex.ToString()); }
             return null;

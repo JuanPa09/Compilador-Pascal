@@ -30,7 +30,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             if (valor.tipo.tipo != Tipos.BOOLEAN)
                 throw new util.ErrorPascal(0, 0, "No es una expresion logica", "semantico");
 
-            Entorno entornoIf = new Entorno(entorno);
+            Entorno entornoIf = new Entorno(".if",entorno);
             if (bool.Parse(valor.valor.ToString()))
             {
                 

@@ -25,7 +25,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             try
             {
                 //Declarar nuevo ambito y nueva variable
-                Entorno entornoFor = new Entorno(entorno);
+                Entorno entornoFor = new Entorno(".for",entorno);
                 Simbolo valorInicial = valInicio.evaluar(entorno); // Evaluar el literal para que me devuelva un simbolo
                 Simbolo valorFinal = valFinal.evaluar(entorno);
                 if (valorInicial.tipo.tipo != Tipos.NUMBER || valorFinal.tipo.tipo != Tipos.NUMBER)
@@ -52,6 +52,10 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                                     else if (retorno.ToString() == "continue")
                                     {
                                         goto Continuar;
+                                    }
+                                    else
+                                    {
+                                        return retorno;
                                     }
                             }
                             catch (Exception ex) { ex.ToString(); }

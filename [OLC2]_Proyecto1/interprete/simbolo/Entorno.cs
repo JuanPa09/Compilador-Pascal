@@ -1,20 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using _OLC2__Proyecto1.interprete.instruccion;
+using System.Diagnostics;
 
 namespace _OLC2__Proyecto1.interprete.simbolo
 {
     class Entorno
     {
-        Dictionary<string, Simbolo> variables = new Dictionary<string,Simbolo>();
-        Dictionary<string, object> funciones;
+        string nombre;
+        Dictionary<string, Simbolo> variables /*= new Dictionary<string,Simbolo>()*/;
+        Dictionary<string, Funcion> funciones;
         Dictionary<string, object> structs;
-        Entorno padre;
+        public Entorno padre;
 
-        public Entorno(Entorno padre)
+        public Entorno(string nombreEntorno,Entorno padre)
         {
+            this.nombre = nombreEntorno;
             this.padre = padre;
             this.variables = new Dictionary<string, Simbolo>();
+            this.funciones = new Dictionary<string, Funcion>();
         }
 
         public void declararVariables(string id, Simbolo variable)
@@ -41,7 +46,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
             throw new util.ErrorPascal(0,0,"No se puede obtener el valor de la variable \"" + id + "\" porque no esta declarada","Semantico");
         }
 
-        public void modificarVariable(string id,object valor,Tipos tipo)
+        public object modificarVariable(string id,object valor,Tipos tipo)
         {
 
             Entorno actual = this;
@@ -52,7 +57,9 @@ namespace _OLC2__Proyecto1.interprete.simbolo
                     throw new util.ErrorPascal(0,0,"No se pudo asignar a la variable \""+id.ToString()+"\" el valor \""+valor.ToString()+"\" porque los datos no coinciden","semántico");
                 simbolo.valor = valor;
                 variables[id] = simbolo;
-                return;
+                if (id == nombre) // Si es un retorno de funcion
+                    return new Simbolo(valor, new Tipo(tipo,null), null);
+                return null;
             }
             throw new util.ErrorPascal(0, 0, "La variable \"" + id + "\" no ha sido declarada", "semántico");
         }
@@ -68,6 +75,39 @@ namespace _OLC2__Proyecto1.interprete.simbolo
             }
             throw new util.ErrorPascal(0, 0, "La variable \"" + id + "\" no ha sido declarada", "semántico");
         }
+
+
+        public void declararFuncion(string nombre, Funcion funcion)
+        {
+            Debug.WriteLine("Nombre Entorno -> "+ this.nombre.ToString() + " Funcion -> "+funcion.nombre);
+            this.funciones.Add(nombre, funcion);
+        }
+
+        public object llamarFuncion(string id)
+        {
+            Entorno actual = this;
+            while (actual!=null)
+            {
+                if (actual.funciones.ContainsKey(id))
+                    return funciones[id].ejecutar(this);
+                actual = actual.padre;
+            }
+            throw new util.ErrorPascal(0,0,"La funcion \""+id+"\" no existe","semantico");
+        }
+
+        public Funcion existeFuncion(string id)
+        {
+            Entorno actual = this;
+            Debug.WriteLine("Nombre Entorno -> "+actual.nombre.ToString());
+            while (actual != null)
+            {
+                if (actual.funciones.ContainsKey(id))
+                    return actual.funciones[id];
+                actual = actual.padre;
+            }
+            return null;
+        }
+
 
         public bool existeVariable(string id)
         {

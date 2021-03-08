@@ -20,7 +20,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
 
         public override object ejecutar(Entorno entorno)
         {
-            Entorno entornoRepeat = new Entorno(entorno);
+            Entorno entornoRepeat = new Entorno(".repeat",entorno);
             try
             {
                 do
@@ -45,6 +45,10 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                                         else if (retorno.ToString() == "continue")
                                         {
                                             goto Continuar;
+                                        }
+                                        else
+                                        {
+                                            return retorno;
                                         }
                                 }
                                 catch (Exception ex) { ex.ToString(); }

@@ -33,7 +33,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
 
             try
             {
-                Entorno entornoCasos = new Entorno(entorno);
+                Entorno entornoCasos = new Entorno(".caso",entorno);
                 if (casosEvaluados.Count != 0 && casosEvaluados.ContainsKey(valorReal.valor))
                 {
                     foreach (Instruccion instruccion in casosEvaluados[valorReal.valor])
