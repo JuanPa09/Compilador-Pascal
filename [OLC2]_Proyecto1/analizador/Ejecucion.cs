@@ -122,12 +122,16 @@ namespace _OLC2__Proyecto1.analizador
                     return evaluarCase(actual.ChildNodes[0]);
                 case "Funcion":
                     return evaluarFuncion(actual.ChildNodes[0]);
+                case "Procedimiento":
+                    return evaluarProcedimiento(actual.ChildNodes[0]);
                 case "Llamada":
                     return evaluarNuevaLlamada(actual.ChildNodes[0]);
                 case "break":
                     return new Break();
                 case "continue":
                     return new Continue();
+                case "exit":
+                    return new Exit(expresionCadena(actual.ChildNodes[2]));
                 
                 
 
@@ -428,6 +432,33 @@ namespace _OLC2__Proyecto1.analizador
                     break;
             }
         }
+
+        public NuevoProcedimiento evaluarProcedimiento(ParseTreeNode actual)
+        {
+            Dictionary<string, Instruccion> paramsValor = new Dictionary<string, Instruccion>();
+            Dictionary<string, Instruccion> paramsRef = new Dictionary<string, Instruccion>();
+            Dictionary<int, string> orden = new Dictionary<int, string>();
+            LinkedList<Tipos> paramsTipos = new LinkedList<Tipos>();
+
+            switch (actual.ChildNodes.Count)
+            {
+                case 11:
+                    parametrosFuncion(actual.ChildNodes[3], ref paramsValor, ref paramsRef, ref paramsTipos, ref orden, 1);
+                    return new NuevoProcedimiento(actual.ChildNodes[1].Token.Text, crearProcedimiento(actual.ChildNodes[1].Token.Text, paramsValor, paramsRef, instrucciones(actual.ChildNodes[6]), instrucciones(actual.ChildNodes[8]), paramsTipos, orden));
+                default:
+                    return new NuevoProcedimiento(actual.ChildNodes[1].Token.Text, crearProcedimiento(actual.ChildNodes[1].Token.Text, paramsValor, paramsRef, instrucciones(actual.ChildNodes[3]), instrucciones(actual.ChildNodes[5]), paramsTipos, orden));
+            }
+        }
+
+        public Procedimiento crearProcedimiento(string nombre, Dictionary<string, Instruccion> paramsValor, Dictionary<string, Instruccion> paramsRef, LinkedList<Instruccion> head, LinkedList<Instruccion> body, LinkedList<Tipos> paramsTipos, Dictionary<int, string> orden)
+        {
+            foreach (Instruccion instruccion in body)
+            {
+                head.AddLast(instruccion);
+            }
+            return new Procedimiento(nombre, paramsValor, paramsRef, head, paramsTipos, orden);
+        }
+
 
 
         /* ------------------------ EVALUACION EXPRESIONES ------------------------ */

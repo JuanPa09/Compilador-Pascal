@@ -11,6 +11,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
         string nombre;
         Dictionary<string, Simbolo> variables /*= new Dictionary<string,Simbolo>()*/;
         Dictionary<string, Funcion> funciones;
+        Dictionary<string, Procedimiento> procedimiento;
         Dictionary<string, object> structs;
         public Entorno padre;
 
@@ -20,6 +21,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
             this.padre = padre;
             this.variables = new Dictionary<string, Simbolo>();
             this.funciones = new Dictionary<string, Funcion>();
+            this.procedimiento = new Dictionary<string, Procedimiento>();
         }
 
         public void declararVariables(string id, Simbolo variable)
@@ -83,18 +85,6 @@ namespace _OLC2__Proyecto1.interprete.simbolo
             this.funciones.Add(nombre, funcion);
         }
 
-        public object llamarFuncion(string id)
-        {
-            Entorno actual = this;
-            while (actual!=null)
-            {
-                if (actual.funciones.ContainsKey(id))
-                    return funciones[id].ejecutar(this);
-                actual = actual.padre;
-            }
-            throw new util.ErrorPascal(0,0,"La funcion \""+id+"\" no existe","semantico");
-        }
-
         public Funcion existeFuncion(string id)
         {
             Entorno actual = this;
@@ -107,6 +97,28 @@ namespace _OLC2__Proyecto1.interprete.simbolo
             }
             return null;
         }
+
+
+
+        public void declararProcedimiento(string nombre, Procedimiento procedimiento)
+        {
+            Debug.WriteLine("Nombre Entorno -> " + this.nombre.ToString() + " Funcion -> " + procedimiento.nombre);
+            this.procedimiento.Add(nombre, procedimiento);
+        }
+
+        public Procedimiento existeProcedimiento(string id)
+        {
+            Entorno actual = this;
+            Debug.WriteLine("Nombre Entorno -> " + actual.nombre.ToString());
+            while (actual != null)
+            {
+                if (actual.procedimiento.ContainsKey(id))
+                    return actual.procedimiento[id];
+                actual = actual.padre;
+            }
+            return null;
+        }
+
 
 
         public bool existeVariable(string id)

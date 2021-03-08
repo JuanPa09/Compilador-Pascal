@@ -41,6 +41,9 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                     case 1:
                         try
                         {
+                            if (valor == null)
+                                throw new util.ErrorPascal(0, 0, "El simbolo no tiene valor (probablemente es un procedimiento)", "semántico");
+
                             if (valor.valor == null)
                                 throw new util.ErrorPascal(0,0,"La variable \""+valor.id+"\" no tiene valor","semántico");
                             consola.AppendText(valor.valor.ToString() + "\n");

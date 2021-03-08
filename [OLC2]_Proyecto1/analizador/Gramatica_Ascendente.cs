@@ -303,6 +303,7 @@ namespace _OLC2__Proyecto1.analizador
                                         | Llamada + Pt_Comas
                                         | Break + Pt_Comas
                                         | Continue + Pt_Comas
+                    /*Ambiguedad en (*/ | Exit + Par_Izq + Expresion_Cadena + Par_Der + Pt_Coma
                                         ;
 
             /*Instruccion_Body.ErrorRule
@@ -605,6 +606,7 @@ namespace _OLC2__Proyecto1.analizador
             this.RegisterOperators(5, Associativity.Left, Var, Identificador);
             this.RegisterOperators(6, Associativity.Left, End, Pt_Coma);
             this.RegisterOperators(7, Associativity.Left, Or, And);
+            this.RegisterOperators(8, Associativity.Left, Expresion_Cadena,Par_Der);
             #endregion
         }
     }

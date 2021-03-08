@@ -7,20 +7,19 @@ using System.Diagnostics;
 
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
-    class Funcion : Instruccion
+    class Procedimiento : Instruccion
     {
         public string nombre;
-        public Tipos tipo;
         public Dictionary<string, Instruccion> variables_Valor; //Instruccion -> NuevaDeclaracion
         public Dictionary<string, Instruccion> variables_Referencia; // Instruccion -> NuevaDeclaracion
         public LinkedList<Instruccion> instrucciones;
         public LinkedList<Tipos> varTipos;
         public Dictionary<int, string> ordenVariables;
         public LinkedList<Expresion> valoresParametros = new LinkedList<Expresion>();
-        public Funcion(string nombre, Tipos tipo, Dictionary<string, Instruccion> variables_Valor, Dictionary<string, Instruccion> variables_Referencia, LinkedList<Instruccion> instrucciones, LinkedList<Tipos>varTipos,Dictionary<int, string> ordenVariables)
+
+        public Procedimiento(string nombre, Dictionary<string, Instruccion> variables_Valor, Dictionary<string, Instruccion> variables_Referencia, LinkedList<Instruccion> instrucciones, LinkedList<Tipos> varTipos, Dictionary<int, string> ordenVariables)
         {
             this.nombre = nombre;
-            this.tipo = tipo;
             this.variables_Valor = variables_Valor;
             this.variables_Referencia = variables_Referencia;
             this.instrucciones = instrucciones;
@@ -28,44 +27,43 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             this.ordenVariables = ordenVariables;
         }
 
-        
+
 
 
         public override object ejecutar(Entorno entorno)
         {
-            Entorno entornoFuncion = new Entorno(nombre,entorno);
+            Entorno entornoFuncion = new Entorno(nombre, entorno);
 
-            entornoFuncion.declararVariables(this.nombre, new Simbolo(null,new Tipo(tipo,null),null));
 
             //Variables Por Valor
-            foreach (KeyValuePair<string,Instruccion> varValor in variables_Valor)
+            foreach (KeyValuePair<string, Instruccion> varValor in variables_Valor)
             {
                 varValor.Value.ejecutar(entornoFuncion);
             }
-            
+
             //Variables Por Referencia
-            foreach(KeyValuePair<string,Instruccion> varReferencia in variables_Referencia)
+            foreach (KeyValuePair<string, Instruccion> varReferencia in variables_Referencia)
             {
                 varReferencia.Value.ejecutar(entornoFuncion);
             }
 
             int index = 1;
-            foreach(Expresion valor in valoresParametros)
+            foreach (Expresion valor in valoresParametros)
             {
                 Simbolo valorParametro = valor.evaluar(entorno);
                 string nombreVariable = ordenVariables[index];
-                entornoFuncion.modificarVariable(nombreVariable,valorParametro.valor,valorParametro.tipo.tipo);
+                entornoFuncion.modificarVariable(nombreVariable, valorParametro.valor, valorParametro.tipo.tipo);
                 index++;
             }
 
 
 
-            foreach(Instruccion instruccion in instrucciones)
+            foreach (Instruccion instruccion in instrucciones)
             {
                 //Puede ser que venga un retorno tipo -> funcion := expresion
                 object retorno = null;
 
-                try { retorno = instruccion.ejecutar(entornoFuncion); } catch (Exception ex) { Debug.WriteLine(ex.ToString());};
+                try { retorno = instruccion.ejecutar(entornoFuncion); } catch (Exception ex) { Debug.WriteLine(ex.ToString()); };
 
                 if (retorno != null)
                 {
@@ -83,7 +81,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
 
             int buscarPosicion(string id)
             {
-                foreach(KeyValuePair<int,string> orden in ordenVariables)
+                foreach (KeyValuePair<int, string> orden in ordenVariables)
                 {
                     if (orden.Value == id)
                         return orden.Key;
@@ -94,7 +92,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             string buscarNombreVariable(int index)
             {
                 int i = 1;
-                foreach(Expresion expresion in valoresParametros)
+                foreach (Expresion expresion in valoresParametros)
                 {
                     if (index == i)
                         return expresion.evaluar(entorno).id;

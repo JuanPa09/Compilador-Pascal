@@ -22,10 +22,12 @@ namespace _OLC2__Proyecto1.interprete.instruccion
         public override object ejecutar(Entorno entorno)
         {
 
+            
+
             Funcion funcion = entorno.existeFuncion(nombre);
 
             if (funcion == null)
-                throw new util.ErrorPascal(0,0,"La funcion \""+nombre+"\" no existe","semantico");
+                goto esProcedimiento;
 
             //Comprobar variables
             if (funcion.varTipos.Count != valores.Count)
@@ -34,14 +36,30 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             //Asignar los valores
             funcion.valoresParametros = valores;
 
-            Simbolo retorno = (Simbolo)funcion.ejecutar(entorno);
+            Simbolo retorno = (Simbolo)funcion.ejecutar(entorno); //Aca
 
             if (retorno == null)
                 throw new util.ErrorPascal(0,0,"La funcion \""+this.nombre+"\" no devolvio ningun valor","semantico");
-
-            Debug.WriteLine("La funcion \""+this.nombre+"\" devolvio -> valor: "+retorno.valor+" tipo: "+retorno.tipo.tipo);
-
             return retorno;
+
+        esProcedimiento:
+
+            Procedimiento procedimiento = entorno.existeProcedimiento(nombre);
+            if(procedimiento == null)
+                throw new util.ErrorPascal(0, 0, "La funcion/procedimiento \"" + nombre + "\" no existe", "semantico");
+
+            //Comprobar variables
+            if (procedimiento.varTipos.Count != valores.Count)
+                throw new util.ErrorPascal(0, 0, "Numero de entradas incorrectas para la funcion \"" + nombre + "\"", "semantico");
+
+            //Asignar los valores
+            procedimiento.valoresParametros = valores;
+
+            procedimiento.ejecutar(entorno); //Aca
+
+            return null;
+
+
         }
     }
 }
