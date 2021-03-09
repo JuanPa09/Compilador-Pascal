@@ -47,8 +47,13 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 throw new util.ErrorPascal(0, 0, "Este id: \"" + id + "\" ya existe en este ambito", "semántico");
 
             if (isVariable)
+            {
                 entorno.declararVariables(id, variable);
-            entorno.declararConstante(id,variable);
+            }
+            else
+            {
+                entorno.declararConstante(id, variable);
+            }
 
             return null;
         }

@@ -145,8 +145,13 @@ namespace _OLC2__Proyecto1.analizador
         public void evaluarVarConst(ParseTreeNode actual, ref LinkedList<Instruccion> listaDeclaraciones)
         {
             if (actual.ChildNodes[0].Term.ToString() == "var")
-                evaluarVariable(actual.ChildNodes[1], ref listaDeclaraciones,true); //Es variable
-            evaluarVariable(actual.ChildNodes[1], ref listaDeclaraciones, false); //Es constante
+            {
+                evaluarVariable(actual.ChildNodes[1], ref listaDeclaraciones, true); //Es variable
+            }
+            else
+            {
+                evaluarVariable(actual.ChildNodes[1], ref listaDeclaraciones, false); //Es constante
+            }
 
         }
 
