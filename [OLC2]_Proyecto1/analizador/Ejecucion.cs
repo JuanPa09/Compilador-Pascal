@@ -22,18 +22,18 @@ namespace _OLC2__Proyecto1.analizador
             this.consola = consola;
         }
 
-        public void iniciar() 
+        public void iniciar()
         {
             LinkedList<Instruccion> listaInstrucciones = instrucciones(nodoRaiz);
             ejectutar(listaInstrucciones);
         }
 
-        public void ejectutar(LinkedList<Instruccion> instrucciones) 
+        public void ejectutar(LinkedList<Instruccion> instrucciones)
         {
-            Entorno global = new Entorno("global",null);
+            Entorno global = new Entorno("global", null);
             foreach (var instruccion in instrucciones)
             {
-                if (instruccion!=null)
+                if (instruccion != null)
                     instruccion.ejecutar(global);
             }
         }
@@ -42,14 +42,14 @@ namespace _OLC2__Proyecto1.analizador
         public LinkedList<Instruccion> instrucciones(ParseTreeNode actual)
         {
             LinkedList<Instruccion> listaInstrucciones = new LinkedList<Instruccion>();
-            foreach(ParseTreeNode nodo in actual.ChildNodes)
+            foreach (ParseTreeNode nodo in actual.ChildNodes)
             {
-                Debug.WriteLine("Nodo -> "+nodo.Term.ToString());
+                Debug.WriteLine("Nodo -> " + nodo.Term.ToString());
 
                 if (nodo.ChildNodes.Count == 2)
                 {
                     instruccionesMultiples(ref listaInstrucciones, nodo);
-                }else
+                } else
                 {
                     listaInstrucciones.AddLast(instruccion(nodo));
                 }
@@ -60,11 +60,11 @@ namespace _OLC2__Proyecto1.analizador
         public void instruccionesMultiples(ref LinkedList<Instruccion> listaInstrucciones, ParseTreeNode actual)
         {
             //LLEGA A INSTRUCCIONES QUE PUEDEN TENER MAS INSTRUCCIONES
-            foreach(ParseTreeNode nodo in actual.ChildNodes)
+            foreach (ParseTreeNode nodo in actual.ChildNodes)
             {
                 //Aca se van a hacer los 2 ciclos
                 Debug.WriteLine("Nodo -> " + nodo.Term.ToString());
-                if (nodo.ChildNodes.Count == 2 && nodo.ChildNodes[1].Term.ToString()!="Pt_Comas")
+                if (nodo.ChildNodes.Count == 2 && nodo.ChildNodes[1].Term.ToString() != "Pt_Comas")
                 {
                     instruccionesMultiples(ref listaInstrucciones, nodo);
                     continue;
@@ -73,12 +73,12 @@ namespace _OLC2__Proyecto1.analizador
                 if (nodo.ChildNodes.Count != 0)
                 {
                     Instruccion instr = instruccion(nodo);
-                    if (instr!=null) 
+                    if (instr != null)
                     {
                         listaInstrucciones.AddLast(instr);
-                    }else
+                    } else
                     {
-                        instruccionesMultiples(ref listaInstrucciones,nodo);
+                        instruccionesMultiples(ref listaInstrucciones, nodo);
                     }
                 }
             }
@@ -89,7 +89,7 @@ namespace _OLC2__Proyecto1.analizador
 
         public Instruccion instruccion(ParseTreeNode actual)
         {
-            Debug.WriteLine("Evaluando: "+actual.ChildNodes[0].Term.ToString());
+            Debug.WriteLine("Evaluando: " + actual.ChildNodes[0].Term.ToString());
             string nombreNodo = actual.ChildNodes[0].Term.ToString();
             if (actual.ChildNodes.Count == 0) { nombreNodo = actual.ChildNodes[0].Token.Text; }
 
@@ -97,14 +97,14 @@ namespace _OLC2__Proyecto1.analizador
             {
                 case "program":
                     //Obtener Instrucciones Head e Instrucciones Body
-                    return new Estructura(instrucciones(actual.ChildNodes[3]),instrucciones(actual.ChildNodes[5]));
+                    return new Estructura(instrucciones(actual.ChildNodes[3]), instrucciones(actual.ChildNodes[5]));
                 case "Writes":
                     if (actual.ChildNodes[0].ChildNodes[0].Token.Text == "writeln")
-                        return new Write(consola,evaluarExpresionCadena(actual.ChildNodes[0].ChildNodes[2],actual.ChildNodes[0].ChildNodes[3]),1);
+                        return new Write(consola, evaluarExpresionCadena(actual.ChildNodes[0].ChildNodes[2], actual.ChildNodes[0].ChildNodes[3]), 1);
                     return new Write(consola, evaluarExpresionCadena(actual.ChildNodes[0].ChildNodes[2], actual.ChildNodes[0].ChildNodes[3]), 0);
                 case "Variables":
                     LinkedList<Instruccion> listaDeclaraciones = new LinkedList<Instruccion>();
-                    evaluarVarConst(actual.ChildNodes[0],ref listaDeclaraciones);
+                    evaluarVarConst(actual.ChildNodes[0], ref listaDeclaraciones);
                     return new DeclararVariable(listaDeclaraciones);
                 case "Asignacion":
                     return nuevaAsignacion(actual.ChildNodes[0]);
@@ -134,11 +134,11 @@ namespace _OLC2__Proyecto1.analizador
                     if (actual.ChildNodes.Count == 5)
                         return new Exit(expresionCadena(actual.ChildNodes[2]));
                     return new Exit(null);
-                
+
 
             }
 
-            return null; 
+            return null;
         }
 
         /* ------------------------ Evaluacion Variables -------------------------- */
@@ -155,24 +155,23 @@ namespace _OLC2__Proyecto1.analizador
 
         }
 
-
         public LinkedList<Instruccion> evaluarVariable(ParseTreeNode actual, ref LinkedList<Instruccion> listaDeclaraciones, bool isVariable)
         {
-            Debug.WriteLine("nodo -> "+actual.Term.ToString());
+            Debug.WriteLine("nodo -> " + actual.Term.ToString());
             //Estoy en var Nueva_Asignacion_variable
-            if (actual.ChildNodes.Count==0)
+            if (actual.ChildNodes.Count == 0)
                 return null;
 
-            
+
             //Ir a Asignacion Variable
-            listaDeclaraciones.AddLast(declaracionVariable(actual.ChildNodes[0],ref listaDeclaraciones,isVariable));
+            listaDeclaraciones.AddLast(declaracionVariable(actual.ChildNodes[0], ref listaDeclaraciones, isVariable));
 
             if (actual.ChildNodes[1].ChildNodes.Count != 0)
-                evaluarVariable(actual.ChildNodes[1].ChildNodes[0],ref listaDeclaraciones,isVariable);
+                evaluarVariable(actual.ChildNodes[1].ChildNodes[0], ref listaDeclaraciones, isVariable);
             return null;
         }
 
-        public Instruccion declaracionVariable(ParseTreeNode actual, ref LinkedList<Instruccion> listaDeclaraciones,bool isVariable)
+        public Instruccion declaracionVariable(ParseTreeNode actual, ref LinkedList<Instruccion> listaDeclaraciones, bool isVariable)
         {
             // Estoy en ID : Tipo ......
             int cantidad = actual.ChildNodes.Count;
@@ -180,18 +179,23 @@ namespace _OLC2__Proyecto1.analizador
             switch (cantidad)
             {
                 case 4:
-                    listaDeclaraciones.AddLast(new NuevaDeclaracion(null,actual.ChildNodes[0].Token.Text,getTipo(actual.ChildNodes[2]),isVariable));
+                    listaDeclaraciones.AddLast(new NuevaDeclaracion(null, actual.ChildNodes[0].Token.Text, getTipo(actual.ChildNodes[2]), isVariable));
                     break;
                 case 6:
                     if (actual.ChildNodes[1].Token.Text != ",")
                     {
-                        listaDeclaraciones.AddLast(new NuevaDeclaracion(expresionCadena(actual.ChildNodes[4]), actual.ChildNodes[0].Token.Text, getTipo(actual.ChildNodes[2]),isVariable));
+                        listaDeclaraciones.AddLast(new NuevaDeclaracion(expresionCadena(actual.ChildNodes[4]), actual.ChildNodes[0].Token.Text, getTipo(actual.ChildNodes[2]), isVariable));
                     }
                     else
                     {
                         //Tiene ,
                         listaDeclaraciones = variosIds(actual.ChildNodes[2], actual.ChildNodes[0].Token.Text, getTipo(actual.ChildNodes[4]), ref listaDeclaraciones);
                     }
+                    break;
+                case 9:
+                    LinkedList<Dictionary<string, int>> diccionarios = new LinkedList<Dictionary<string, int>>();
+                    getDimensiones(actual.ChildNodes[4],ref diccionarios);
+                    listaDeclaraciones.AddLast(new NuevoArreglo(actual.ChildNodes[0].Token.Text,diccionarios,getTipo(actual.ChildNodes[7])));
                     break;
             }
             return null;
@@ -200,42 +204,46 @@ namespace _OLC2__Proyecto1.analizador
 
         public Instruccion nuevaAsignacion(ParseTreeNode actual)
         {
-            switch(actual.ChildNodes[0].Term.ToString())
+            switch (actual.ChildNodes[0].Term.ToString())
             {
                 case "ID":
                     return new NuevaAsignacion(actual.ChildNodes[0].Token.Text, expresionCadena(actual.ChildNodes[3]));
-
+                case "Valor_Arreglo":
+                    Expresion expresion = expresionCadena(actual.ChildNodes[3]);
+                    actual = actual.ChildNodes[0];
+                    LinkedList<int> indices = new LinkedList<int>();
+                    return new AsignacionArreglo(actual.ChildNodes[0].Token.Text, getIndicesArray(actual.ChildNodes[2],indices),expresion);
                 default:
                     return null;
 
             }
         }
 
-        public  LinkedList<Instruccion> variosIds(ParseTreeNode actual, string id, Tipos tipo, ref LinkedList<Instruccion> listaDeclaraciones)
+        public LinkedList<Instruccion> variosIds(ParseTreeNode actual, string id, Tipos tipo, ref LinkedList<Instruccion> listaDeclaraciones)
         {
             // listaDeclaraciones.AddLast(NuevaDeclaracion(expresionCadena(actual.ChildNodes)))
-            LinkedList<string> variables = listaVariables(actual, new LinkedList<string>()) ;
+            LinkedList<string> variables = listaVariables(actual, new LinkedList<string>());
 
-            listaDeclaraciones.AddLast(new NuevaDeclaracion(null,id,tipo,true));
+            listaDeclaraciones.AddLast(new NuevaDeclaracion(null, id, tipo, true));
 
-            foreach(string identificador in variables)
+            foreach (string identificador in variables)
             {
-                listaDeclaraciones.AddLast(new NuevaDeclaracion(null,identificador,tipo,true));
+                listaDeclaraciones.AddLast(new NuevaDeclaracion(null, identificador, tipo, true));
             }
 
-           return listaDeclaraciones;
+            return listaDeclaraciones;
         }
 
-        public LinkedList<string> listaVariables(ParseTreeNode actual,LinkedList<string> lista)
+        public LinkedList<string> listaVariables(ParseTreeNode actual, LinkedList<string> lista)
         {
             Debug.WriteLine(actual.Term.ToString());
-            switch(actual.ChildNodes.Count)
+            switch (actual.ChildNodes.Count)
             {
                 case 2:
                     lista.AddLast(actual.ChildNodes[0].Token.Text);
                     if (actual.ChildNodes[1].ChildNodes.Count == 0)
                         return lista;
-                    return listaVariables(actual.ChildNodes[1],lista);
+                    return listaVariables(actual.ChildNodes[1], lista);
                 default: // 3
                     lista.AddLast(actual.ChildNodes[1].Token.Text);
                     if (actual.ChildNodes[2].ChildNodes.Count == 0)
@@ -243,6 +251,40 @@ namespace _OLC2__Proyecto1.analizador
                     return listaVariables(actual.ChildNodes[2], lista);
             }
         }
+
+        public void getDimensiones(ParseTreeNode actual,ref LinkedList<Dictionary<string,int>> diccionarios)
+        {
+            if (actual.ChildNodes.Count == 4)
+            {
+                Dictionary<string, int> valores = new Dictionary<string, int>();
+                valores.Add("min", int.Parse(actual.ChildNodes[0].Token.Text));
+                valores.Add("max", int.Parse(actual.ChildNodes[3].Token.Text));
+                diccionarios.AddFirst(valores);
+            }else
+            {
+                getDimensiones(actual.ChildNodes[0], ref diccionarios);
+                getDimensiones(actual.ChildNodes[2], ref diccionarios);
+
+            }
+        }
+        
+        public LinkedList<int> getIndicesArray(ParseTreeNode actual,LinkedList<int> indices)
+        {
+
+            switch(actual.ChildNodes.Count)
+            {
+                case 3:
+                    indices =  getIndicesArray(actual.ChildNodes[0],indices);
+                    indices =  getIndicesArray(actual.ChildNodes[2], indices);
+                    break;
+                default:
+                    indices.AddLast(int.Parse(actual.ChildNodes[0].Token.Text));
+                    break;
+            }
+
+            return indices;
+        }
+
 
         /* ---------------------------------- Evaluaciones Sentencias De Control ----------------------------------- */
 
@@ -528,7 +570,8 @@ namespace _OLC2__Proyecto1.analizador
                     case "Llamada":
                         return new ObtenerLlamada(evaluarNuevaLlamada(actual.ChildNodes[0]));
                     case "Valor_Arreglo":
-                        return null;
+                        actual = actual.ChildNodes[0];
+                        return new ObtenerArreglo(actual.ChildNodes[0].Token.Text, getIndicesArray(actual.ChildNodes[2], new LinkedList<int>())); ;
                     case "true":
                         return new Literal('T', true);
                     case "false":

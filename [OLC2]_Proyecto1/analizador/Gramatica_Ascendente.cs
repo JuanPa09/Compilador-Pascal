@@ -147,6 +147,8 @@ namespace _OLC2__Proyecto1.analizador
             NonTerminal Instruccion_Ciclo = new NonTerminal("Instruccion_Ciclo");
             NonTerminal Sentencias_Transferencia = new NonTerminal("Sentencias_Transferencia");
             NonTerminal Nueva_Asignacion_Constantep = new NonTerminal("Nueva_Asignacion_Constantep");
+            NonTerminal Dimensiones = new NonTerminal("Dimensiones");
+            NonTerminal Indices_Array = new NonTerminal("Indices_Array");
             NonTerminal A = new NonTerminal("a");
             NonTerminal B = new NonTerminal("b");
             NonTerminal C = new NonTerminal("c");
@@ -472,7 +474,14 @@ namespace _OLC2__Proyecto1.analizador
                                         = Identificador + Ds_Pts + Tipo_Variable + Igual + Expresion_Cadena + Pt_Coma
                                         | Identificador + Ds_Pts + Tipo_Variable + Pt_Coma
                                         | Identificador + Coma + Lista_Variables + Ds_Pts + Tipo_Variable + Pt_Coma
+                                        | Identificador + Ds_Pts + Array + Cor_Izq + Dimensiones + Cor_Der + Of + Tipo_Variable + Pt_Coma
                                         ;
+
+            Dimensiones.Rule
+                                        = Dimensiones + Coma + Dimensiones
+                                        | Entero + Pt + Pt + Entero
+                                        ;
+
 
             Asignacion_Constante.Rule
                                         = Identificador + Ds_Pts + Tipo_Variable + Igual + Expresion_Cadena + Pt_Coma
@@ -541,8 +550,13 @@ namespace _OLC2__Proyecto1.analizador
                                         | Valor_Arreglo
                                         | True
                                         | False
+                                        | Identificador + Cor_Izq + Indices_Array + Cor_Der
                                         ;
 
+            Indices_Array.Rule
+                                        = Indices_Array + Coma + Indices_Array
+                                        | Entero
+                                        ;
             
 
             Valor.Rule
@@ -603,8 +617,10 @@ namespace _OLC2__Proyecto1.analizador
                                         ;
 
             Valor_Arreglo.Rule
-                                        = Identificador + Cor_Izq + Entero + Cor_Der
+                                        = Identificador + Cor_Izq + Indices_Array + Cor_Der
                                         ;
+
+            
 
 
             #endregion
@@ -619,6 +635,7 @@ namespace _OLC2__Proyecto1.analizador
             this.RegisterOperators(6, Associativity.Left, End, Pt_Coma);
             this.RegisterOperators(7, Associativity.Left, Or, And, Not);
             this.RegisterOperators(8, Associativity.Left, Expresion_Cadena,Par_Der);
+            this.RegisterOperators(9, Associativity.Left, Coma);
             #endregion
         }
     }

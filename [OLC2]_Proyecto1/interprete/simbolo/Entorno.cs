@@ -13,6 +13,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
         Dictionary<string, Simbolo> constantes;
         Dictionary<string, Funcion> funciones;
         Dictionary<string, Procedimiento> procedimiento;
+        public Dictionary<string, Tipos> tipoArreglo;
         Dictionary<string, object> structs;
         public Entorno padre;
 
@@ -24,6 +25,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
             this.constantes = new Dictionary<string, Simbolo>();
             this.funciones = new Dictionary<string, Funcion>();
             this.procedimiento = new Dictionary<string, Procedimiento>();
+            this.tipoArreglo = new Dictionary<string, Tipos>();
         }
 
         public void declararVariables(string id, Simbolo variable)
@@ -143,6 +145,18 @@ namespace _OLC2__Proyecto1.interprete.simbolo
                 actual = actual.padre;
             }
             return null;
+        }
+
+        public Tipos getTipoArray(string id)
+        {
+            Entorno actual = this;
+            while (actual != null)
+            {
+                if (actual.tipoArreglo.ContainsKey(id))
+                    return actual.tipoArreglo[id];
+                actual = actual.padre;
+            }
+            return Tipos.NULLL;
         }
 
 
