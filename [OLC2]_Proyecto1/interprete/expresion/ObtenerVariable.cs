@@ -21,7 +21,11 @@ namespace _OLC2__Proyecto1.interprete.expresion
 
         public override Simbolo evaluar(Entorno entorno)
         {
-            return entorno.obtenerVariable(id);
+            if (entorno.existeVariable(id))
+                return entorno.obtenerVariable(id);
+            if (entorno.existeConstante(id))
+                return entorno.obtenerConstane(id);
+            throw new util.ErrorPascal(0,0,"No se puede obtener el valor de \""+id+"\" porque no esta declarado","semantico");
         }
     }
 }

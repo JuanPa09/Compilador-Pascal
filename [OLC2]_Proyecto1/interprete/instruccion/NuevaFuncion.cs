@@ -19,6 +19,8 @@ namespace _OLC2__Proyecto1.interprete.instruccion
 
         public override object ejecutar(Entorno entorno)
         {
+            if (entorno.existeFuncion(nombre) != null || entorno.existeProcedimiento(nombre) != null)
+                throw new util.ErrorPascal(0, 0, "Ya hay un(a) procedimiento/funcion con el nombre \"" + nombre + "\" en este ambito", "semántico");
             entorno.declararFuncion(nombre, funcion);
             return null;
         }

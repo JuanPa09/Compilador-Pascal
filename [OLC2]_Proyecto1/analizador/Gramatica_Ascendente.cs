@@ -137,6 +137,7 @@ namespace _OLC2__Proyecto1.analizador
             NonTerminal Nueva_Asignacion_Variable = new NonTerminal("Nueva_Asignacion_Variable");
             NonTerminal Nueva_Asignacion_Variablep = new NonTerminal("Nueva_Asignacion_Variablep");
             NonTerminal Nueva_Asignacion_Constante = new NonTerminal("Nueva_Asignacion_Constante");
+            NonTerminal Asignacion_Constante = new NonTerminal("Asignacion_Constante");
             NonTerminal Valor_Arreglo = new NonTerminal("Valor_Arreglo");
             NonTerminal Funcion = new NonTerminal("Funcion");
             NonTerminal Procedimiento = new NonTerminal("Procedimiento");
@@ -145,6 +146,7 @@ namespace _OLC2__Proyecto1.analizador
             NonTerminal Instrucciones_Ciclo = new NonTerminal("Instrucciones_Ciclo");
             NonTerminal Instruccion_Ciclo = new NonTerminal("Instruccion_Ciclo");
             NonTerminal Sentencias_Transferencia = new NonTerminal("Sentencias_Transferencia");
+            NonTerminal Nueva_Asignacion_Constantep = new NonTerminal("Nueva_Asignacion_Constantep");
             NonTerminal A = new NonTerminal("a");
             NonTerminal B = new NonTerminal("b");
             NonTerminal C = new NonTerminal("c");
@@ -304,6 +306,8 @@ namespace _OLC2__Proyecto1.analizador
                                         | Break + Pt_Comas
                                         | Continue + Pt_Comas
                     /*Ambiguedad en (*/ | Exit + Par_Izq + Expresion_Cadena + Par_Der + Pt_Coma
+                                        | Exit + Par_Izq + Par_Der + Pt_Comas
+                                        | Exit + Pt_Comas
                                         ;
 
             /*Instruccion_Body.ErrorRule
@@ -470,8 +474,16 @@ namespace _OLC2__Proyecto1.analizador
                                         | Identificador + Coma + Lista_Variables + Ds_Pts + Tipo_Variable + Pt_Coma
                                         ;
 
+            Asignacion_Constante.Rule
+                                        = Identificador + Ds_Pts + Tipo_Variable + Igual + Expresion_Cadena + Pt_Coma
+                                        ;
+
             Nueva_Asignacion_Constante.Rule
-                                        = Identificador + Ds_Pts + Tipo_Variable + Igual + Expresion_Cadena + Pt_Coma + Nueva_Asignacion_Constante
+                                        = Asignacion_Constante + Nueva_Asignacion_Constantep
+                                        ;
+
+            Nueva_Asignacion_Constantep.Rule
+                                        = Nueva_Asignacion_Constante
                                         | Epsilon
                                         ;
 
@@ -605,7 +617,7 @@ namespace _OLC2__Proyecto1.analizador
             this.RegisterOperators(4, Associativity.Left, Then, Else);
             this.RegisterOperators(5, Associativity.Left, Var, Identificador);
             this.RegisterOperators(6, Associativity.Left, End, Pt_Coma);
-            this.RegisterOperators(7, Associativity.Left, Or, And);
+            this.RegisterOperators(7, Associativity.Left, Or, And, Not);
             this.RegisterOperators(8, Associativity.Left, Expresion_Cadena,Par_Der);
             #endregion
         }

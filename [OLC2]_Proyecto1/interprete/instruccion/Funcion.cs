@@ -69,6 +69,8 @@ namespace _OLC2__Proyecto1.interprete.instruccion
 
                 if (retorno != null)
                 {
+                    if (retorno == "$$")
+                        throw new util.ErrorPascal(0,0,"La funcion \""+nombre+"\" salio sin retornar nada","semantico"); ;
                     //Hay un retorno de funcion -> Retorna un simbolo
 
                     //Pasar Las Variables Por Referencia

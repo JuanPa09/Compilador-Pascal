@@ -10,6 +10,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
     {
         string nombre;
         Dictionary<string, Simbolo> variables /*= new Dictionary<string,Simbolo>()*/;
+        Dictionary<string, Simbolo> constantes;
         Dictionary<string, Funcion> funciones;
         Dictionary<string, Procedimiento> procedimiento;
         Dictionary<string, object> structs;
@@ -20,6 +21,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
             this.nombre = nombreEntorno;
             this.padre = padre;
             this.variables = new Dictionary<string, Simbolo>();
+            this.constantes = new Dictionary<string, Simbolo>();
             this.funciones = new Dictionary<string, Funcion>();
             this.procedimiento = new Dictionary<string, Procedimiento>();
         }
@@ -36,6 +38,18 @@ namespace _OLC2__Proyecto1.interprete.simbolo
             }
         }
 
+        public void declararConstante(string id, Simbolo variable)
+        {
+            if (constantes.Count == 0 || !constantes.ContainsKey(id))
+            {
+                this.constantes.Add(id, variable);
+            }
+            else
+            {
+                throw new util.ErrorPascal(0, 0, "La constante \"" + id + "\" ya existe en este ambito", "semántico");
+            }
+        }
+
         public Simbolo obtenerVariable(string id)
         {
             Entorno actual = this;
@@ -46,6 +60,18 @@ namespace _OLC2__Proyecto1.interprete.simbolo
                 actual = actual.padre;              //Busca de padre en padre
             }
             throw new util.ErrorPascal(0,0,"No se puede obtener el valor de la variable \"" + id + "\" porque no esta declarada","Semantico");
+        }
+
+        public Simbolo obtenerConstane(string id)
+        {
+            Entorno actual = this;
+            while (actual != null)
+            {
+                if (actual.constantes.ContainsKey(id))
+                    return actual.constantes[id];
+                actual = actual.padre;              //Busca de padre en padre
+            }
+            throw new util.ErrorPascal(0, 0, "No se puede obtener el valor de la variable \"" + id + "\" porque no esta declarada", "Semantico");
         }
 
         public object modificarVariable(string id,object valor,Tipos tipo)
@@ -123,8 +149,30 @@ namespace _OLC2__Proyecto1.interprete.simbolo
 
         public bool existeVariable(string id)
         {
+            Entorno actual = this;
+            //while (actual != null)
+            //{
+                if (actual.variables.ContainsKey(id))
+                    return true;
+                //actual = actual.padre;
+            //}
             return false;
         }
+
+
+        public bool existeConstante(string id)
+        {
+            Entorno actual = this;
+            /*while (actual != null)
+            {*/
+                if (actual.constantes.ContainsKey(id))
+                    return true;
+                //actual = actual.padre;
+            /*}*/
+            return false;
+        }
+
+
 
        
 

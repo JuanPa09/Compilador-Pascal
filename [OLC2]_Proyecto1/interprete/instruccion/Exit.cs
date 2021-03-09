@@ -19,6 +19,8 @@ namespace _OLC2__Proyecto1.interprete.instruccion
 
         public override object ejecutar(Entorno entorno)
         {
+            if (expresion == null)
+                return "$$";
             return this.expresion.evaluar(entorno);
         }
     }

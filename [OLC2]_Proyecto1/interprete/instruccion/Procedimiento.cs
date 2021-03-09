@@ -72,8 +72,8 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                     //Pasar Las Variables Por Referencia
                     agregarValoresReferenciados();
 
-                    //Retornar el valor dado.
-                    return retorno;
+                    //Los procedimientos no retornan nada
+                    return null;
                 }
             }
 

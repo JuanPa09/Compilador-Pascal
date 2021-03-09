@@ -12,12 +12,14 @@ namespace _OLC2__Proyecto1.interprete.instruccion
         private Expresion literal;
         private string id;
         Tipos tipo;
+        private bool isVariable;
 
-        public NuevaDeclaracion(Expresion literal, string id,Tipos tipo) 
+        public NuevaDeclaracion(Expresion literal, string id,Tipos tipo, bool isVariable) 
         {
             this.literal = literal;
             this.id = id;
             this.tipo = tipo;
+            this.isVariable = isVariable;
         }
 
         public override object ejecutar(Entorno entorno)
@@ -32,7 +34,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 literalEvaluado = literal.evaluar(entorno);
 
                 if (literalEvaluado.tipo.tipo != tipo)
-                    throw new util.ErrorPascal(0,0,"No se puede declarar la variable \""+id+"\". Tipos de dato incorrecto","semántico");
+                    throw new util.ErrorPascal(0,0,"No se puede declarar la variable/constante \""+id+"\". Tipos de dato incorrecto","semántico");
 
                 variable = new Simbolo(literalEvaluado.valor, new Tipo(this.tipo,null), this.id);
             }
@@ -41,7 +43,12 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 variable = new Simbolo(null, new Tipo(this.tipo, null), this.id);
             }
 
-            entorno.declararVariables(id, variable);
+            if (entorno.existeVariable(id) || entorno.existeConstante(id))
+                throw new util.ErrorPascal(0, 0, "Este id: \"" + id + "\" ya existe en este ambito", "semántico");
+
+            if (isVariable)
+                entorno.declararVariables(id, variable);
+            entorno.declararConstante(id,variable);
 
             return null;
         }
