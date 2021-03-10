@@ -24,7 +24,7 @@ namespace _OLC2__Proyecto1.interprete.expresion
             Simbolo variable = entorno.existeLaVariable(id);
             if (variable == null)
                 return entorno.obtenerConstane(id);
-            return variable;
+            return entorno.obtenerVariable(id);
 
             /*if (entorno.existeVariable(id))
                 return entorno.obtenerVariable(id);

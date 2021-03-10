@@ -551,7 +551,7 @@ namespace _OLC2__Proyecto1.analizador
                                         | Valor_Arreglo
                                         | True
                                         | False
-                                        | Identificador + Cor_Izq + Indices_Array + Cor_Der
+                                        //| Identificador + Cor_Izq + Indices_Array + Cor_Der
                                         ;
 
             Indices_Array.Rule
