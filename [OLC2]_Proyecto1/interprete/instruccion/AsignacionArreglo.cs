@@ -31,6 +31,8 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             int i = 1;
             foreach(int indice in indices)
             {
+                if (diccionario == null)
+                    throw new util.ErrorPascal(0, 0, "No se puede acceder al indice \""+indice+"\" porque no se ha inicializado el arreglo \""+nombre+"\"", "semantico");
                 if (!diccionario.ContainsKey(indice))
                     throw new util.ErrorPascal(0, 0, "Acceso denegado a \"" + this.nombre + "\" No se puede acceder al indice \"" + indice + "\" en la posicion " + (i - 1), "semantico");
                 if (i == indices.Count)

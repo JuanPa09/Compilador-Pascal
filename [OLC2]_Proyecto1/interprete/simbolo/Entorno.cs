@@ -76,7 +76,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
             throw new util.ErrorPascal(0, 0, "No se puede obtener el valor de la variable \"" + id + "\" porque no esta declarada", "Semantico");
         }
 
-        public object modificarVariable(string id,object valor,Tipos tipo)
+        public object modificarVariable(string id,object valor,Tipos tipo,string idVariable)
         {
 
             Entorno actual = this;
@@ -85,6 +85,8 @@ namespace _OLC2__Proyecto1.interprete.simbolo
                 Simbolo simbolo = variables[id];
                 if (simbolo.tipo.tipo != tipo)
                     throw new util.ErrorPascal(0,0,"No se pudo asignar a la variable \""+id.ToString()+"\" el valor \""+valor.ToString()+"\" porque los datos no coinciden","semántico");
+                if (simbolo.tipo.tipo == Tipos.ARRAY)
+                    tipoArreglo.Add(id,getTipoArray(idVariable));
                 simbolo.valor = valor;
                 variables[id] = simbolo;
                 if (id == nombre) // Si es un retorno de funcion
@@ -185,6 +187,21 @@ namespace _OLC2__Proyecto1.interprete.simbolo
             /*}*/
             return false;
         }
+
+
+        public Simbolo existeLaVariable(string id)
+        {
+            Entorno actual = this;
+            while (actual != null)
+            {
+                if (actual.variables.ContainsKey(id))
+                    return actual.variables[id];
+                actual = actual.padre;              //Busca de padre en padre
+            }
+            return null;
+        }
+
+
 
 
 

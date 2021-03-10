@@ -63,7 +63,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
 
                     Continuar:;
                     inicio++;
-                    entornoFor.modificarVariable(id, inicio,Tipos.NUMBER);
+                    entornoFor.modificarVariable(id, inicio,Tipos.NUMBER,null);
                     if (inicio > final)
                         throw new Exception("Error en for");
 

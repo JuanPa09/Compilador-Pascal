@@ -527,6 +527,7 @@ namespace _OLC2__Proyecto1.analizador
                                         | Real
                                         | Boolean
                                         | Identificador
+                                        | Array
                                         ;
 
 

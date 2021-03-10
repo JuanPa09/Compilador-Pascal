@@ -28,6 +28,8 @@ namespace _OLC2__Proyecto1.interprete.expresion
                 case 'S':
                     this.valor = this.valor.ToString().Replace("'","");
                     return new Simbolo(this.valor, new Tipo(Tipos.STRING, null), null);
+                case 'A':
+                    return new Simbolo(this.valor, new Tipo(Tipos.ARRAY, null), null);
                 case 'T':
                     return new Simbolo(true, new Tipo(Tipos.BOOLEAN, null), null);
                 case 'F':

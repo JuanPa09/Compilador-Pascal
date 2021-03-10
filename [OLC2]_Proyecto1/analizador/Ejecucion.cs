@@ -711,6 +711,8 @@ namespace _OLC2__Proyecto1.analizador
                     return Tipos.STRING;
                 case "boolean":
                     return Tipos.BOOLEAN;
+                case "array":
+                    return Tipos.ARRAY;
                 default:
                     return Tipos.NULLL;
             }
@@ -727,7 +729,8 @@ namespace _OLC2__Proyecto1.analizador
 
                 case "CADENA":
                     return 'S';
-
+                case "Array":
+                    return 'A';
                 case "true":
                     return 'T';
                 case "false":

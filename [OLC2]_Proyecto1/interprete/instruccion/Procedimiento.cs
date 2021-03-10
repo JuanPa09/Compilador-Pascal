@@ -52,7 +52,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             {
                 Simbolo valorParametro = valor.evaluar(entorno);
                 string nombreVariable = ordenVariables[index];
-                entornoFuncion.modificarVariable(nombreVariable, valorParametro.valor, valorParametro.tipo.tipo);
+                entornoFuncion.modificarVariable(nombreVariable, valorParametro.valor, valorParametro.tipo.tipo,valorParametro.id);
                 index++;
             }
 
@@ -116,7 +116,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                     string name = buscarNombreVariable(pos);
                     if (name == null)
                         throw new util.ErrorPascal(0, 0, "No existe variable de referencia", "semantico");
-                    entorno.modificarVariable(name, variable.valor, variable.tipo.tipo);
+                    entorno.modificarVariable(name, variable.valor, variable.tipo.tipo,variable.id);
 
                 }
             }
