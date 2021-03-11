@@ -13,11 +13,11 @@ namespace _OLC2__Proyecto1.interprete.instruccion
         public Dictionary<string, Instruccion> variables_Valor; //Instruccion -> NuevaDeclaracion
         public Dictionary<string, Instruccion> variables_Referencia; // Instruccion -> NuevaDeclaracion
         public LinkedList<Instruccion> instrucciones;
-        public LinkedList<Tipos> varTipos;
+        public LinkedList<Tipo> varTipos;
         public Dictionary<int, string> ordenVariables;
         public LinkedList<Expresion> valoresParametros = new LinkedList<Expresion>();
 
-        public Procedimiento(string nombre, Dictionary<string, Instruccion> variables_Valor, Dictionary<string, Instruccion> variables_Referencia, LinkedList<Instruccion> instrucciones, LinkedList<Tipos> varTipos, Dictionary<int, string> ordenVariables)
+        public Procedimiento(string nombre, Dictionary<string, Instruccion> variables_Valor, Dictionary<string, Instruccion> variables_Referencia, LinkedList<Instruccion> instrucciones, LinkedList<Tipo> varTipos, Dictionary<int, string> ordenVariables)
         {
             this.nombre = nombre;
             this.variables_Valor = variables_Valor;

@@ -7,7 +7,7 @@ namespace _OLC2__Proyecto1.interprete.expresion
 {
     class ObtenerVariable : Expresion
     {
-        private string id;
+        public string id;
 
         public ObtenerVariable(string id)
         {

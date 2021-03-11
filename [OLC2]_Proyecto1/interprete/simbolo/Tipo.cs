@@ -12,7 +12,8 @@ namespace _OLC2__Proyecto1.interprete.simbolo
         NULLL = 3,
         ARRAY = 4,
         OBJECT = 5,
-        DOUBLE = 6
+        DOUBLE = 6,
+        TYPE = 7
 
     }
     class Tipo

@@ -14,6 +14,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
         Dictionary<string, Funcion> funciones;
         Dictionary<string, Procedimiento> procedimiento;
         public Dictionary<string, Tipos> tipoArreglo;
+        Dictionary<string, Simbolo> types;
         Dictionary<string, object> structs;
         public Entorno padre;
 
@@ -26,7 +27,34 @@ namespace _OLC2__Proyecto1.interprete.simbolo
             this.funciones = new Dictionary<string, Funcion>();
             this.procedimiento = new Dictionary<string, Procedimiento>();
             this.tipoArreglo = new Dictionary<string, Tipos>();
+            this.types = new Dictionary<string, Simbolo>();
         }
+
+        public void declararType(string id, Simbolo variable)
+        {
+            if (types.Count == 0 || !types.ContainsKey(id))
+            {
+                this.types.Add(id, variable);
+            }
+            else
+            {
+                throw new util.ErrorPascal(0, 0, "El type \"" + id + "\" ya existe en este ambito", "semántico");
+            }
+        }
+
+
+        public Simbolo obtenerType(string id)
+        {
+            Entorno actual = this;
+            while (actual != null)
+            {
+                if (actual.types.ContainsKey(id))
+                    return actual.types[id];
+                actual = actual.padre;              //Busca de padre en padre
+            }
+            throw new util.ErrorPascal(0, 0, "No se puede obtener el valor de la variable \"" + id + "\" porque no esta declarada", "Semantico");
+        }
+
 
         public void declararVariables(string id, Simbolo variable)
         {

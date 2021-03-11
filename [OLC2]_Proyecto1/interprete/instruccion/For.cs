@@ -35,7 +35,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 int inicio = int.Parse(valorInicial.valor.ToString());
                 int final = int.Parse(valorFinal.valor.ToString());
 
-                while (inicio != final)
+                while (inicio <= final)
                 {
 
                     foreach (Instruccion instruccion in instrucciones)
@@ -64,8 +64,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                     Continuar:;
                     inicio++;
                     entornoFor.modificarVariable(id, inicio,Tipos.NUMBER,null);
-                    if (inicio > final)
-                        throw new Exception("Error en for");
+                    
 
                 }
 

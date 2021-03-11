@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections;
 
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
@@ -11,7 +12,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
         int min;
         int max;
         object valorDefecto;
-        public Dictionary<int, object> diccionario = new Dictionary<int, object>();
+        public Dictionary<int, object> diccionario;
 
         public Arreglo(Arreglo hijo, int min, int max, object valorDefecto)
         {
@@ -19,7 +20,8 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             this.min = min;
             this.max = max;
             this.valorDefecto = valorDefecto;
-        }
+            diccionario = new Dictionary<int, object>();
+    }
 
         public override object ejecutar(Entorno entorno)
         {
@@ -34,9 +36,12 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             }
             else
             {
+
                 for(int i=min;i<=max; i++)
                 {
-                    diccionario.Add(i, hijo.diccionario);
+                    
+                        this.diccionario.Add(i,new Dictionary<int,object>(hijo.diccionario));
+                    
                 }
             }
             return null;

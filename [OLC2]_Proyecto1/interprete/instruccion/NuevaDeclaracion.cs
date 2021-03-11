@@ -9,12 +9,12 @@ namespace _OLC2__Proyecto1.interprete.instruccion
 {
     class NuevaDeclaracion : Instruccion
     {
-        private Expresion literal;
-        private string id;
-        Tipos tipo;
-        private bool isVariable;
+        public Expresion literal;
+        public string id;
+        public Tipo tipo;
+        public bool isVariable;
 
-        public NuevaDeclaracion(Expresion literal, string id,Tipos tipo, bool isVariable) 
+        public NuevaDeclaracion(Expresion literal, string id,Tipo tipo, bool isVariable) 
         {
             this.literal = literal;
             this.id = id;
@@ -27,20 +27,35 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             Simbolo literalEvaluado;
             Simbolo variable;
 
+            if(tipo.tipo == Tipos.TYPE)
+            {
+                Simbolo type = entorno.obtenerType(tipo.tipoAuxiliar);
+                if(type.tipo.tipo == Tipos.OBJECT)
+                {
+                    Objeto nuevoObjeto = new Objeto((Objeto)type.valor);
+                    tipo.tipo = Tipos.OBJECT;
+                    entorno.declararVariables(id,new Simbolo(nuevoObjeto,tipo,id));
+                }
+                else
+                {
+                    //Es array
+                }
+                return null;
+            }
             
 
             if (literal != null)
             {
                 literalEvaluado = literal.evaluar(entorno);
 
-                if (literalEvaluado.tipo.tipo != tipo)
+                if (literalEvaluado.tipo.tipo != tipo.tipo)
                     throw new util.ErrorPascal(0,0,"No se puede declarar la variable/constante \""+id+"\". Tipos de dato incorrecto","semántico");
 
-                variable = new Simbolo(literalEvaluado.valor, new Tipo(this.tipo,null), this.id);
+                variable = new Simbolo(literalEvaluado.valor, new Tipo(this.tipo.tipo,null), this.id);
             }
             else
             {
-                variable = new Simbolo(null, new Tipo(this.tipo, null), this.id);
+                variable = new Simbolo(null, new Tipo(this.tipo.tipo, null), this.id);
             }
 
             if (entorno.existeVariable(id) || entorno.existeConstante(id))

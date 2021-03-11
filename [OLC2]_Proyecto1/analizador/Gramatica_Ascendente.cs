@@ -208,7 +208,7 @@ namespace _OLC2__Proyecto1.analizador
                                         ;
 
             Objeto.Rule
-                                        = Type + Identificador + Igual + Object + Declaraciones_Type + End + Pt_Coma
+                                        = Type + Identificador + Igual + Object + Variables + End + Pt_Coma
                                         ;
 
             /*Objeto.ErrorRule
@@ -365,6 +365,7 @@ namespace _OLC2__Proyecto1.analizador
             Asignacion.Rule
                                         = Identificador + Ds_Pts + Igual + Expresion_Cadena + Pt_Coma
                                         | Valor_Arreglo + Ds_Pts + Igual + Expresion_Cadena + Pt_Coma
+                                        | Identificador + Pt + Identificador + Ds_Pts + Igual + Expresion_Cadena + Pt_Coma
                                         ;
 
             /*Asignacion.ErrorRule
@@ -551,12 +552,13 @@ namespace _OLC2__Proyecto1.analizador
                                         | Valor_Arreglo
                                         | True
                                         | False
+                                        | Expresion_Numerica + Pt + Expresion_Numerica
                                         //| Identificador + Cor_Izq + Indices_Array + Cor_Der
                                         ;
 
             Indices_Array.Rule
                                         = Indices_Array + Coma + Indices_Array
-                                        | Entero
+                                        | Expresion_Cadena
                                         ;
             
 
@@ -629,7 +631,7 @@ namespace _OLC2__Proyecto1.analizador
             #region Preferencias
             this.Root = Raiz;
             this.RegisterOperators(1, Associativity.Left, Mas, Menos);
-            this.RegisterOperators(2, Associativity.Left, Por, Div);
+            this.RegisterOperators(2, Associativity.Left, Por, Div, Pt);
             this.RegisterOperators(3, Associativity.Left, Mod);
             this.RegisterOperators(4, Associativity.Left, Then, Else);
             this.RegisterOperators(5, Associativity.Left, Var, Identificador);
@@ -637,6 +639,7 @@ namespace _OLC2__Proyecto1.analizador
             this.RegisterOperators(7, Associativity.Left, Or, And, Not);
             this.RegisterOperators(8, Associativity.Left, Expresion_Cadena,Par_Der);
             this.RegisterOperators(9, Associativity.Left, Coma);
+            this.RegisterOperators(10, Associativity.Left, Expresion_Cadena,Pt);
             #endregion
         }
     }

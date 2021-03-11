@@ -106,6 +106,8 @@ namespace _OLC2__Proyecto1.analizador
                     LinkedList<Instruccion> listaDeclaraciones = new LinkedList<Instruccion>();
                     evaluarVarConst(actual.ChildNodes[0], ref listaDeclaraciones);
                     return new DeclararVariable(listaDeclaraciones);
+                case "Types":
+                    return evaluarType(actual.ChildNodes[0]);
                 case "Asignacion":
                     return nuevaAsignacion(actual.ChildNodes[0]);
                 case "If_Statement":
@@ -142,6 +144,26 @@ namespace _OLC2__Proyecto1.analizador
         }
 
         /* ------------------------ Evaluacion Variables -------------------------- */
+
+        public Instruccion evaluarType(ParseTreeNode actual)
+        {
+            switch(actual.ChildNodes[0].Term.ToString())
+            {
+                case "Objeto":
+                    return nuevoObjeto(actual.ChildNodes[0]) ;
+                case "Tipo_Array":
+                    return null;
+            }
+            return null;
+        }
+
+        public Instruccion nuevoObjeto(ParseTreeNode actual)
+        {
+            LinkedList<Instruccion> variables = new LinkedList<Instruccion>();
+            evaluarVarConst(actual.ChildNodes[4],ref variables);
+            return new DeclararObjeto(actual.ChildNodes[1].Token.Text,variables);
+        }
+
         public void evaluarVarConst(ParseTreeNode actual, ref LinkedList<Instruccion> listaDeclaraciones)
         {
             if (actual.ChildNodes[0].Term.ToString() == "var")
@@ -204,22 +226,27 @@ namespace _OLC2__Proyecto1.analizador
 
         public Instruccion nuevaAsignacion(ParseTreeNode actual)
         {
-            switch (actual.ChildNodes[0].Term.ToString())
+            switch(actual.ChildNodes.Count)
             {
-                case "ID":
-                    return new NuevaAsignacion(actual.ChildNodes[0].Token.Text, expresionCadena(actual.ChildNodes[3]));
-                case "Valor_Arreglo":
-                    Expresion expresion = expresionCadena(actual.ChildNodes[3]);
-                    actual = actual.ChildNodes[0];
-                    LinkedList<int> indices = new LinkedList<int>();
-                    return new AsignacionArreglo(actual.ChildNodes[0].Token.Text, getIndicesArray(actual.ChildNodes[2],indices),expresion);
+                case 7:
+                    return new AsignacionObjeto(actual.ChildNodes[0].Token.Text, actual.ChildNodes[2].Token.Text, expresionCadena(actual.ChildNodes[5]));
                 default:
-                    return null;
-
+                    switch (actual.ChildNodes[0].Term.ToString())
+                    {
+                        case "ID":
+                            return new NuevaAsignacion(actual.ChildNodes[0].Token.Text, expresionCadena(actual.ChildNodes[3]));
+                        case "Valor_Arreglo":
+                            Expresion expresion = expresionCadena(actual.ChildNodes[3]);
+                            actual = actual.ChildNodes[0];
+                            LinkedList<Expresion> indices = new LinkedList<Expresion>();
+                            return new AsignacionArreglo(actual.ChildNodes[0].Token.Text, getIndicesArray(actual.ChildNodes[2], indices), expresion);
+                        default:
+                            return null;
+                    }
             }
         }
 
-        public LinkedList<Instruccion> variosIds(ParseTreeNode actual, string id, Tipos tipo, ref LinkedList<Instruccion> listaDeclaraciones)
+        public LinkedList<Instruccion> variosIds(ParseTreeNode actual, string id, Tipo tipo, ref LinkedList<Instruccion> listaDeclaraciones)
         {
             // listaDeclaraciones.AddLast(NuevaDeclaracion(expresionCadena(actual.ChildNodes)))
             LinkedList<string> variables = listaVariables(actual, new LinkedList<string>());
@@ -268,17 +295,19 @@ namespace _OLC2__Proyecto1.analizador
             }
         }
         
-        public LinkedList<int> getIndicesArray(ParseTreeNode actual,LinkedList<int> indices)
+        public LinkedList<Expresion> getIndicesArray(ParseTreeNode actual,LinkedList<Expresion> indices)
         {
 
             switch(actual.ChildNodes.Count)
             {
                 case 3:
-                    indices =  getIndicesArray(actual.ChildNodes[0],indices);
-                    indices =  getIndicesArray(actual.ChildNodes[2], indices);
+                    //indices =  getIndicesArray(actual.ChildNodes[0],indices);
+                    //indices =  getIndicesArray(actual.ChildNodes[2], indices);
+                    indices = getIndicesArray(actual.ChildNodes[0], indices);
+                    indices = getIndicesArray(actual.ChildNodes[2], indices);
                     break;
                 default:
-                    indices.AddLast(int.Parse(actual.ChildNodes[0].Token.Text));
+                    indices.AddLast(expresionCadena(actual.ChildNodes[0]));
                     break;
             }
 
@@ -397,7 +426,7 @@ namespace _OLC2__Proyecto1.analizador
             Dictionary<string, Instruccion> paramsValor = new Dictionary<string, Instruccion>();
             Dictionary<string, Instruccion> paramsRef = new Dictionary<string, Instruccion>();
             Dictionary<int, string> orden = new Dictionary<int, string>();
-            LinkedList<Tipos> paramsTipos = new LinkedList<Tipos>();
+            LinkedList<Tipo> paramsTipos = new LinkedList<Tipo>();
 
             switch (actual.ChildNodes.Count)
             {
@@ -409,7 +438,7 @@ namespace _OLC2__Proyecto1.analizador
             }
         }
 
-        public Funcion crearFuncion(string nombre, Tipos tipo, Dictionary<string,Instruccion> paramsValor, Dictionary<string, Instruccion> paramsRef, LinkedList<Instruccion> head, LinkedList<Instruccion> body, LinkedList<Tipos> paramsTipos, Dictionary<int, string> orden)
+        public Funcion crearFuncion(string nombre, Tipo tipo, Dictionary<string,Instruccion> paramsValor, Dictionary<string, Instruccion> paramsRef, LinkedList<Instruccion> head, LinkedList<Instruccion> body, LinkedList<Tipo> paramsTipos, Dictionary<int, string> orden)
         {
             
             foreach(Instruccion instruccion in body)
@@ -419,14 +448,14 @@ namespace _OLC2__Proyecto1.analizador
             return new Funcion(nombre, tipo, paramsValor, paramsRef, head, paramsTipos,orden);
         }
 
-        public void parametrosFuncion(ParseTreeNode actual, ref Dictionary<string, Instruccion> paramsValor, ref Dictionary<string, Instruccion> paramsRef,ref LinkedList<Tipos> paramsTipos,ref Dictionary<int, string> orden, int pos)
+        public void parametrosFuncion(ParseTreeNode actual, ref Dictionary<string, Instruccion> paramsValor, ref Dictionary<string, Instruccion> paramsRef,ref LinkedList<Tipo> paramsTipos,ref Dictionary<int, string> orden, int pos)
         {
             switch (actual.ChildNodes.Count)
             {
                 case 4:
                     LinkedList<string> ids = new LinkedList<string>();
                     listaVariables(actual.ChildNodes[0], ids);
-                    Tipos tipoVar = getTipo(actual.ChildNodes[2]);
+                    Tipo tipoVar = getTipo(actual.ChildNodes[2]);
                     foreach(string variable in ids)
                     {
                         paramsValor.Add(variable, new NuevaDeclaracion(null,variable,tipoVar,true));
@@ -494,7 +523,7 @@ namespace _OLC2__Proyecto1.analizador
             Dictionary<string, Instruccion> paramsValor = new Dictionary<string, Instruccion>();
             Dictionary<string, Instruccion> paramsRef = new Dictionary<string, Instruccion>();
             Dictionary<int, string> orden = new Dictionary<int, string>();
-            LinkedList<Tipos> paramsTipos = new LinkedList<Tipos>();
+            LinkedList<Tipo> paramsTipos = new LinkedList<Tipo>();
 
             switch (actual.ChildNodes.Count)
             {
@@ -506,7 +535,7 @@ namespace _OLC2__Proyecto1.analizador
             }
         }
 
-        public Procedimiento crearProcedimiento(string nombre, Dictionary<string, Instruccion> paramsValor, Dictionary<string, Instruccion> paramsRef, LinkedList<Instruccion> head, LinkedList<Instruccion> body, LinkedList<Tipos> paramsTipos, Dictionary<int, string> orden)
+        public Procedimiento crearProcedimiento(string nombre, Dictionary<string, Instruccion> paramsValor, Dictionary<string, Instruccion> paramsRef, LinkedList<Instruccion> head, LinkedList<Instruccion> body, LinkedList<Tipo> paramsTipos, Dictionary<int, string> orden)
         {
             foreach (Instruccion instruccion in body)
             {
@@ -552,6 +581,8 @@ namespace _OLC2__Proyecto1.analizador
                         return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '*');
                     case "/":
                         return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '/');
+                    case ".":
+                        return new ObtenerObjeto(evaluarExpresionNumerica(actual.ChildNodes[0]),evaluarExpresionNumerica(actual.ChildNodes[2]));
                     default:
                         return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '%');
                 }
@@ -571,7 +602,7 @@ namespace _OLC2__Proyecto1.analizador
                         return new ObtenerLlamada(evaluarNuevaLlamada(actual.ChildNodes[0]));
                     case "Valor_Arreglo":
                         actual = actual.ChildNodes[0];
-                        return new ObtenerArreglo(actual.ChildNodes[0].Token.Text, getIndicesArray(actual.ChildNodes[2], new LinkedList<int>())); ;
+                        return new ObtenerArreglo(actual.ChildNodes[0].Token.Text, getIndicesArray(actual.ChildNodes[2], new LinkedList<Expresion>())); ;
                     case "true":
                         return new Literal('T', true);
                     case "false":
@@ -700,21 +731,23 @@ namespace _OLC2__Proyecto1.analizador
             }
         }
 
-        public Tipos getTipo(ParseTreeNode actual)
+        public Tipo getTipo(ParseTreeNode actual)
         {
             Debug.WriteLine(actual.ChildNodes[0].Term.ToString());
             switch(actual.ChildNodes[0].Term.ToString())
             {
                 case "integer":
-                    return Tipos.NUMBER;
+                    return new Tipo(Tipos.NUMBER,null);
                 case "string":
-                    return Tipos.STRING;
+                    return new Tipo(Tipos.STRING, null);
                 case "boolean":
-                    return Tipos.BOOLEAN;
+                    return new Tipo(Tipos.BOOLEAN, null);
                 case "array":
-                    return Tipos.ARRAY;
+                    return new Tipo(Tipos.BOOLEAN, null);
+                case "ID":
+                    return new Tipo(Tipos.TYPE, actual.ChildNodes[0].Token.Text);
                 default:
-                    return Tipos.NULLL;
+                    return new Tipo(Tipos.NULLL, null);
             }
         }
 

@@ -9,8 +9,8 @@ namespace _OLC2__Proyecto1.interprete.expresion
     class ObtenerArreglo : Expresion
     {
         string nombre;
-        LinkedList<int> valores;
-        public ObtenerArreglo(string nombre,LinkedList<int>valores)
+        LinkedList<Expresion> valores;
+        public ObtenerArreglo(string nombre,LinkedList<Expresion>valores)
         {
             this.nombre = nombre;
             this.valores = valores;
@@ -20,8 +20,17 @@ namespace _OLC2__Proyecto1.interprete.expresion
         {
             Dictionary<int,object> arreglo = (Dictionary<int,object>)entorno.obtenerVariable(nombre).valor;
 
+            LinkedList<int> indexes = new LinkedList<int>();
+            foreach (Expresion expresion in valores)
+            {
+                Simbolo valor = expresion.evaluar(entorno);
+                if (valor.tipo.tipo != Tipos.NUMBER)
+                    throw new util.ErrorPascal(0, 0, "No se puede tomar \"" + valor.valor + "\" como indice para " + nombre, "semantico");
+                indexes.AddLast(int.Parse(valor.valor.ToString()));
+            }
+
             int i = 1;
-            foreach(int index in valores)
+            foreach(int index in indexes)
             {                
                 if (!arreglo.ContainsKey(index))
                     throw new util.ErrorPascal(0, 0, "Acceso denegado a \""+this.nombre+"\" No se puede acceder al indice \"" + index + "\" en la posicion "+(i - 1), "semantico");

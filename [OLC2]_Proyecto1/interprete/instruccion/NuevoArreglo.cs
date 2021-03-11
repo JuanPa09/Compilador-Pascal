@@ -13,14 +13,14 @@ namespace _OLC2__Proyecto1.interprete.instruccion
         LinkedList<Dictionary<string, int>> dimensiones; //max;val min;val -> * Las dimensiones vienen de derecha a izquierda
         object valorDefecto;
         string nombre;
-        Tipos tipo;
+        Tipo tipo;
 
-        public NuevoArreglo(string nombre,LinkedList<Dictionary<string,int>> dimensiones,Tipos tipo)
+        public NuevoArreglo(string nombre,LinkedList<Dictionary<string,int>> dimensiones,Tipo tipo)
         {
             this.tipo = tipo;
             this.nombre = nombre;
             this.dimensiones = dimensiones;
-            switch (tipo)
+            switch (tipo.tipo)
             {
                 case Tipos.DOUBLE: valorDefecto = 0;
                     break;
@@ -46,8 +46,8 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 hijo.ejecutar(entorno);
             }
 
-            entorno.declararVariables(this.nombre,new Simbolo(hijo.diccionario,new Tipo(Tipos.ARRAY,null),nombre));
-            entorno.tipoArreglo.Add(nombre,tipo);
+            entorno.declararVariables(this.nombre,new Simbolo(new Dictionary<int,object>(hijo.diccionario),new Tipo(Tipos.ARRAY,null),nombre));
+            entorno.tipoArreglo.Add(nombre,tipo.tipo);
 
             return null;
         }

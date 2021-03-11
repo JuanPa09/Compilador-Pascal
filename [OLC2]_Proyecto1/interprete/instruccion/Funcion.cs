@@ -10,14 +10,14 @@ namespace _OLC2__Proyecto1.interprete.instruccion
     class Funcion : Instruccion
     {
         public string nombre;
-        public Tipos tipo;
+        public Tipo tipo;
         public Dictionary<string, Instruccion> variables_Valor; //Instruccion -> NuevaDeclaracion
         public Dictionary<string, Instruccion> variables_Referencia; // Instruccion -> NuevaDeclaracion
         public LinkedList<Instruccion> instrucciones;
-        public LinkedList<Tipos> varTipos;
+        public LinkedList<Tipo> varTipos;
         public Dictionary<int, string> ordenVariables;
         public LinkedList<Expresion> valoresParametros = new LinkedList<Expresion>();
-        public Funcion(string nombre, Tipos tipo, Dictionary<string, Instruccion> variables_Valor, Dictionary<string, Instruccion> variables_Referencia, LinkedList<Instruccion> instrucciones, LinkedList<Tipos>varTipos,Dictionary<int, string> ordenVariables)
+        public Funcion(string nombre, Tipo tipo, Dictionary<string, Instruccion> variables_Valor, Dictionary<string, Instruccion> variables_Referencia, LinkedList<Instruccion> instrucciones, LinkedList<Tipo>varTipos,Dictionary<int, string> ordenVariables)
         {
             this.nombre = nombre;
             this.tipo = tipo;
@@ -35,7 +35,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
         {
             Entorno entornoFuncion = new Entorno(nombre,entorno);
 
-            entornoFuncion.declararVariables(this.nombre, new Simbolo(null,new Tipo(tipo,null),null));
+            entornoFuncion.declararVariables(this.nombre, new Simbolo(null,new Tipo(tipo.tipo,null),null));
 
             //Variables Por Valor
             foreach (KeyValuePair<string,Instruccion> varValor in variables_Valor)

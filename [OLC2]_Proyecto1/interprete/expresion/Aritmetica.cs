@@ -34,7 +34,6 @@ namespace _OLC2__Proyecto1.interprete.expresion
                 case '+':
                     if (izquierda.tipo.tipo == Tipos.STRING || derecha.tipo.tipo == Tipos.STRING) {
                         //Concatenar
-                        izquierda.tipo.tipo = Tipos.STRING;
                         resultado = new Simbolo(izquierda.ToString() + derecha.ToString(), izquierda.tipo, null);
                     }
                     else
