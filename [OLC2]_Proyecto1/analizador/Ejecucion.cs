@@ -7,6 +7,7 @@ using _OLC2__Proyecto1.interprete.instruccion;
 using Irony.Ast;
 using Irony.Parsing;
 using System.Windows.Forms;
+using _OLC2__Proyecto1.reportes;
 using System.Diagnostics;
 
 namespace _OLC2__Proyecto1.analizador
@@ -15,11 +16,13 @@ namespace _OLC2__Proyecto1.analizador
     {
         ParseTreeNode nodoRaiz;
         RichTextBox consola;
+        Reporte reporte;
 
-        public Ejecucion(ParseTreeNode nodoRaiz, RichTextBox consola)
+        public Ejecucion(ParseTreeNode nodoRaiz, RichTextBox consola,Reporte reporte)
         {
             this.nodoRaiz = nodoRaiz;
             this.consola = consola;
+            this.reporte = reporte;
         }
 
         public void iniciar()
@@ -30,11 +33,11 @@ namespace _OLC2__Proyecto1.analizador
 
         public void ejectutar(LinkedList<Instruccion> instrucciones)
         {
-            Entorno global = new Entorno("global", null);
+            Entorno global = new Entorno("global", null,reporte);
             foreach (var instruccion in instrucciones)
             {
                 if (instruccion != null)
-                    instruccion.ejecutar(global);
+                    instruccion.ejecutar(global,reporte);
             }
         }
 
@@ -114,7 +117,7 @@ namespace _OLC2__Proyecto1.analizador
                     return evaluarIf(actual.ChildNodes[0]);
                 case "For_Statement":
                     actual = actual.ChildNodes[0];
-                    return new For(evaluarExpresionNumerica(actual.ChildNodes[4]), evaluarExpresionNumerica(actual.ChildNodes[6]), actual.ChildNodes[1].Token.Text, instrucciones(actual.ChildNodes[9]));
+                    return new For(evaluarExpresionNumerica(actual.ChildNodes[4]), evaluarExpresionNumerica(actual.ChildNodes[6]), actual.ChildNodes[1].Token.Text, instrucciones(actual.ChildNodes[9]), actual.ChildNodes[4].Token.Location.Line, actual.ChildNodes[4].Token.Location.Column);
                 case "While_Statement":
                     return evaluarWhile(actual.ChildNodes[0]);
                 case "Repeat_Statement":
@@ -136,6 +139,8 @@ namespace _OLC2__Proyecto1.analizador
                     if (actual.ChildNodes.Count == 5)
                         return new Exit(expresionCadena(actual.ChildNodes[2]));
                     return new Exit(null);
+                case "graficar_ts":
+                    return new GraficarSimbolos();
 
 
             }
@@ -161,7 +166,7 @@ namespace _OLC2__Proyecto1.analizador
         {
             LinkedList<Instruccion> variables = new LinkedList<Instruccion>();
             evaluarVarConst(actual.ChildNodes[4],ref variables);
-            return new DeclararObjeto(actual.ChildNodes[1].Token.Text,variables);
+            return new DeclararObjeto(actual.ChildNodes[1].Token.Text,variables,actual.ChildNodes[1].Token.Location.Line,actual.ChildNodes[1].Token.Location.Column);
         }
 
         public void evaluarVarConst(ParseTreeNode actual, ref LinkedList<Instruccion> listaDeclaraciones)
@@ -201,23 +206,23 @@ namespace _OLC2__Proyecto1.analizador
             switch (cantidad)
             {
                 case 4:
-                    listaDeclaraciones.AddLast(new NuevaDeclaracion(null, actual.ChildNodes[0].Token.Text, getTipo(actual.ChildNodes[2]), isVariable));
+                    listaDeclaraciones.AddLast(new NuevaDeclaracion(null, actual.ChildNodes[0].Token.Text, getTipo(actual.ChildNodes[2]), isVariable,actual.ChildNodes[0].Token.Location.Line, actual.ChildNodes[0].Token.Location.Column));
                     break;
                 case 6:
                     if (actual.ChildNodes[1].Token.Text != ",")
                     {
-                        listaDeclaraciones.AddLast(new NuevaDeclaracion(expresionCadena(actual.ChildNodes[4]), actual.ChildNodes[0].Token.Text, getTipo(actual.ChildNodes[2]), isVariable));
+                        listaDeclaraciones.AddLast(new NuevaDeclaracion(expresionCadena(actual.ChildNodes[4]), actual.ChildNodes[0].Token.Text, getTipo(actual.ChildNodes[2]), isVariable, actual.ChildNodes[0].Token.Location.Line, actual.ChildNodes[0].Token.Location.Column));
                     }
                     else
                     {
                         //Tiene ,
-                        listaDeclaraciones = variosIds(actual.ChildNodes[2], actual.ChildNodes[0].Token.Text, getTipo(actual.ChildNodes[4]), ref listaDeclaraciones);
+                        listaDeclaraciones = variosIds(actual.ChildNodes[2], actual.ChildNodes[0].Token.Text, getTipo(actual.ChildNodes[4]), ref listaDeclaraciones,isVariable);
                     }
                     break;
                 case 9:
                     LinkedList<Dictionary<string, int>> diccionarios = new LinkedList<Dictionary<string, int>>();
                     getDimensiones(actual.ChildNodes[4],ref diccionarios);
-                    listaDeclaraciones.AddLast(new NuevoArreglo(actual.ChildNodes[0].Token.Text,diccionarios,getTipo(actual.ChildNodes[7])));
+                    listaDeclaraciones.AddLast(new NuevoArreglo(actual.ChildNodes[0].Token.Text,diccionarios,getTipo(actual.ChildNodes[7]), actual.ChildNodes[0].Token.Location.Line, actual.ChildNodes[0].Token.Location.Column));
                     break;
             }
             return null;
@@ -246,16 +251,16 @@ namespace _OLC2__Proyecto1.analizador
             }
         }
 
-        public LinkedList<Instruccion> variosIds(ParseTreeNode actual, string id, Tipo tipo, ref LinkedList<Instruccion> listaDeclaraciones)
+        public LinkedList<Instruccion> variosIds(ParseTreeNode actual, string id, Tipo tipo, ref LinkedList<Instruccion> listaDeclaraciones,bool isVariable)
         {
             // listaDeclaraciones.AddLast(NuevaDeclaracion(expresionCadena(actual.ChildNodes)))
             LinkedList<string> variables = listaVariables(actual, new LinkedList<string>());
 
-            listaDeclaraciones.AddLast(new NuevaDeclaracion(null, id, tipo, true));
+            listaDeclaraciones.AddLast(new NuevaDeclaracion(null, id, tipo, isVariable, actual.Token.Location.Line, actual.Token.Location.Column));
 
             foreach (string identificador in variables)
             {
-                listaDeclaraciones.AddLast(new NuevaDeclaracion(null, identificador, tipo, true));
+                listaDeclaraciones.AddLast(new NuevaDeclaracion(null, identificador, tipo, isVariable, actual.ChildNodes[0].Token.Location.Line, actual.ChildNodes[0].Token.Location.Column));
             }
 
             return listaDeclaraciones;
@@ -427,25 +432,26 @@ namespace _OLC2__Proyecto1.analizador
             Dictionary<string, Instruccion> paramsRef = new Dictionary<string, Instruccion>();
             Dictionary<int, string> orden = new Dictionary<int, string>();
             LinkedList<Tipo> paramsTipos = new LinkedList<Tipo>();
-
+            int fila = actual.ChildNodes[1].Token.Location.Line;
+            int columna = actual.ChildNodes[1].Token.Location.Column;
             switch (actual.ChildNodes.Count)
             {
                 case 13:
                     parametrosFuncion(actual.ChildNodes[3],ref paramsValor,ref paramsRef,ref paramsTipos,ref orden,1);
-                    return new NuevaFuncion(actual.ChildNodes[1].Token.Text,crearFuncion(actual.ChildNodes[1].Token.Text, getTipo(actual.ChildNodes[6]),paramsValor,paramsRef, instrucciones(actual.ChildNodes[8]), instrucciones(actual.ChildNodes[10]),paramsTipos,orden));
+                    return new NuevaFuncion(actual.ChildNodes[1].Token.Text,crearFuncion(actual.ChildNodes[1].Token.Text, getTipo(actual.ChildNodes[6]),paramsValor,paramsRef, instrucciones(actual.ChildNodes[8]), instrucciones(actual.ChildNodes[10]),paramsTipos,orden,fila,columna), fila,columna);
                 default:
-                    return new NuevaFuncion(actual.ChildNodes[1].Token.Text, crearFuncion(actual.ChildNodes[1].Token.Text, getTipo(actual.ChildNodes[3]), paramsValor, paramsRef, instrucciones(actual.ChildNodes[5]), instrucciones(actual.ChildNodes[7]),paramsTipos,orden));
+                    return new NuevaFuncion(actual.ChildNodes[1].Token.Text, crearFuncion(actual.ChildNodes[1].Token.Text, getTipo(actual.ChildNodes[3]), paramsValor, paramsRef, instrucciones(actual.ChildNodes[5]), instrucciones(actual.ChildNodes[7]),paramsTipos,orden,fila,columna), fila,columna);
             }
         }
 
-        public Funcion crearFuncion(string nombre, Tipo tipo, Dictionary<string,Instruccion> paramsValor, Dictionary<string, Instruccion> paramsRef, LinkedList<Instruccion> head, LinkedList<Instruccion> body, LinkedList<Tipo> paramsTipos, Dictionary<int, string> orden)
+        public Funcion crearFuncion(string nombre, Tipo tipo, Dictionary<string,Instruccion> paramsValor, Dictionary<string, Instruccion> paramsRef, LinkedList<Instruccion> head, LinkedList<Instruccion> body, LinkedList<Tipo> paramsTipos, Dictionary<int, string> orden,int fila, int columna)
         {
             
             foreach(Instruccion instruccion in body)
             {
                 head.AddLast(instruccion);
             }
-            return new Funcion(nombre, tipo, paramsValor, paramsRef, head, paramsTipos,orden);
+            return new Funcion(nombre, tipo, paramsValor, paramsRef, head, paramsTipos,orden, fila,columna);
         }
 
         public void parametrosFuncion(ParseTreeNode actual, ref Dictionary<string, Instruccion> paramsValor, ref Dictionary<string, Instruccion> paramsRef,ref LinkedList<Tipo> paramsTipos,ref Dictionary<int, string> orden, int pos)
@@ -458,7 +464,7 @@ namespace _OLC2__Proyecto1.analizador
                     Tipo tipoVar = getTipo(actual.ChildNodes[2]);
                     foreach(string variable in ids)
                     {
-                        paramsValor.Add(variable, new NuevaDeclaracion(null,variable,tipoVar,true));
+                        paramsValor.Add(variable, new NuevaDeclaracion(null,variable,tipoVar,true, actual.ChildNodes[1].Token.Location.Line, actual.ChildNodes[1].Token.Location.Column));
                         orden.Add(pos, variable);
                         paramsTipos.AddLast(tipoVar);
                         pos++;
@@ -468,7 +474,7 @@ namespace _OLC2__Proyecto1.analizador
                     parametrosFuncion(actual.ChildNodes[3].ChildNodes[1],ref paramsValor, ref paramsRef, ref paramsTipos,ref orden , pos);
                     return;
                 case 5:
-                    paramsRef.Add(actual.ChildNodes[1].Token.Text,new NuevaDeclaracion(null,actual.ChildNodes[1].Token.Text,getTipo(actual.ChildNodes[3]),true));
+                    paramsRef.Add(actual.ChildNodes[1].Token.Text,new NuevaDeclaracion(null,actual.ChildNodes[1].Token.Text,getTipo(actual.ChildNodes[3]),true, actual.ChildNodes[1].Token.Location.Line, actual.ChildNodes[1].Token.Location.Column));
                     paramsTipos.AddLast(getTipo(actual.ChildNodes[3]));
                     orden.Add(pos, actual.ChildNodes[1].Token.Text);
                     if (actual.ChildNodes[4].ChildNodes.Count == 0)
@@ -529,9 +535,9 @@ namespace _OLC2__Proyecto1.analizador
             {
                 case 11:
                     parametrosFuncion(actual.ChildNodes[3], ref paramsValor, ref paramsRef, ref paramsTipos, ref orden, 1);
-                    return new NuevoProcedimiento(actual.ChildNodes[1].Token.Text, crearProcedimiento(actual.ChildNodes[1].Token.Text, paramsValor, paramsRef, instrucciones(actual.ChildNodes[6]), instrucciones(actual.ChildNodes[8]), paramsTipos, orden));
+                    return new NuevoProcedimiento(actual.ChildNodes[1].Token.Text, crearProcedimiento(actual.ChildNodes[1].Token.Text, paramsValor, paramsRef, instrucciones(actual.ChildNodes[6]), instrucciones(actual.ChildNodes[8]), paramsTipos, orden), actual.ChildNodes[1].Token.Location.Line, actual.ChildNodes[1].Token.Location.Column);
                 default:
-                    return new NuevoProcedimiento(actual.ChildNodes[1].Token.Text, crearProcedimiento(actual.ChildNodes[1].Token.Text, paramsValor, paramsRef, instrucciones(actual.ChildNodes[3]), instrucciones(actual.ChildNodes[5]), paramsTipos, orden));
+                    return new NuevoProcedimiento(actual.ChildNodes[1].Token.Text, crearProcedimiento(actual.ChildNodes[1].Token.Text, paramsValor, paramsRef, instrucciones(actual.ChildNodes[3]), instrucciones(actual.ChildNodes[5]), paramsTipos, orden), actual.ChildNodes[1].Token.Location.Line, actual.ChildNodes[1].Token.Location.Column);
             }
         }
 
@@ -646,7 +652,16 @@ namespace _OLC2__Proyecto1.analizador
             else
             {
                 //Buscar Identificador
-                return new Relacional(new ObtenerVariable(actual.ChildNodes[0].Token.Text),null,"unica");
+                if(actual.ChildNodes.Count != 0)
+                    return new Relacional(new ObtenerVariable(actual.ChildNodes[0].Token.Text),null,"unica");
+                if (actual.Token.Text.ToLower() == "true")
+                {
+                    return new Relacional(new Literal('T', true), null, "unica");
+                }
+                else
+                {
+                    return new Relacional(new Literal('F', false), null, "unica");
+                }
             }
         }
 
@@ -742,8 +757,10 @@ namespace _OLC2__Proyecto1.analizador
                     return new Tipo(Tipos.STRING, null);
                 case "boolean":
                     return new Tipo(Tipos.BOOLEAN, null);
+                case "real":
+                    return new Tipo(Tipos.DOUBLE,null);
                 case "array":
-                    return new Tipo(Tipos.BOOLEAN, null);
+                    return new Tipo(Tipos.ARRAY, null);
                 case "ID":
                     return new Tipo(Tipos.TYPE, actual.ChildNodes[0].Token.Text);
                 default:

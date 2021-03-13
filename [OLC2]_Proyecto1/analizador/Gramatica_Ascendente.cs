@@ -299,6 +299,7 @@ namespace _OLC2__Proyecto1.analizador
             Instruccion_Body.Rule
                                         = Writes
                                         | Asignacion
+                                        | Graficar + Par_Izq + Par_Der + Pt_Comas
                                         | If_Statement
                                         | Case_Statement
                                         | For_Statement
@@ -553,8 +554,10 @@ namespace _OLC2__Proyecto1.analizador
                                         | True
                                         | False
                                         | Expresion_Numerica + Pt + Expresion_Numerica
+                                        //| Par_Izq + Expresion_Numerica + Par_Der
                                         //| Identificador + Cor_Izq + Indices_Array + Cor_Der
                                         ;
+
 
             Indices_Array.Rule
                                         = Indices_Array + Coma + Indices_Array
@@ -590,6 +593,8 @@ namespace _OLC2__Proyecto1.analizador
                                         | Expresion_Logica + Or + Expresion_Logica
                                         | Not + Expresion_Logica
                                         | Expresion_Relacional
+                                        | True
+                                        | False
                                         ;
 
             Pt_Comas.Rule
@@ -631,7 +636,7 @@ namespace _OLC2__Proyecto1.analizador
             #region Preferencias
             this.Root = Raiz;
             this.RegisterOperators(1, Associativity.Left, Mas, Menos);
-            this.RegisterOperators(2, Associativity.Left, Por, Div, Pt);
+            this.RegisterOperators(2, Associativity.Left, Por, Div, Pt,Llamada,A);
             this.RegisterOperators(3, Associativity.Left, Mod);
             this.RegisterOperators(4, Associativity.Left, Then, Else);
             this.RegisterOperators(5, Associativity.Left, Var, Identificador);
@@ -640,6 +645,9 @@ namespace _OLC2__Proyecto1.analizador
             this.RegisterOperators(8, Associativity.Left, Expresion_Cadena,Par_Der);
             this.RegisterOperators(9, Associativity.Left, Coma);
             this.RegisterOperators(10, Associativity.Left, Expresion_Cadena,Pt);
+
+
+
             #endregion
         }
     }

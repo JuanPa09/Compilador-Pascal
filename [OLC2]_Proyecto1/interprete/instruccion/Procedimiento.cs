@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using _OLC2__Proyecto1.interprete.expresion;
 using System.Diagnostics;
+using _OLC2__Proyecto1.reportes;
 
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
@@ -30,27 +31,27 @@ namespace _OLC2__Proyecto1.interprete.instruccion
 
 
 
-        public override object ejecutar(Entorno entorno)
+        public override object ejecutar(Entorno entorno,Reporte reporte)
         {
-            Entorno entornoFuncion = new Entorno(nombre, entorno);
+            Entorno entornoFuncion = new Entorno(nombre, entorno,reporte);
 
 
             //Variables Por Valor
             foreach (KeyValuePair<string, Instruccion> varValor in variables_Valor)
             {
-                varValor.Value.ejecutar(entornoFuncion);
+                varValor.Value.ejecutar(entornoFuncion,reporte);
             }
 
             //Variables Por Referencia
             foreach (KeyValuePair<string, Instruccion> varReferencia in variables_Referencia)
             {
-                varReferencia.Value.ejecutar(entornoFuncion);
+                varReferencia.Value.ejecutar(entornoFuncion,reporte);
             }
 
             int index = 1;
             foreach (Expresion valor in valoresParametros)
             {
-                Simbolo valorParametro = valor.evaluar(entorno);
+                Simbolo valorParametro = valor.evaluar(entorno,reporte);
                 string nombreVariable = ordenVariables[index];
                 entornoFuncion.modificarVariable(nombreVariable, valorParametro.valor, valorParametro.tipo.tipo,valorParametro.id);
                 index++;
@@ -63,7 +64,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 //Puede ser que venga un retorno tipo -> funcion := expresion
                 object retorno = null;
 
-                try { retorno = instruccion.ejecutar(entornoFuncion); } catch (Exception ex) { Debug.WriteLine(ex.ToString()); };
+                try { retorno = instruccion.ejecutar(entornoFuncion,reporte); } catch (Exception ex) { Debug.WriteLine(ex.ToString()); };
 
                 if (retorno != null)
                 {
@@ -95,7 +96,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 foreach (Expresion expresion in valoresParametros)
                 {
                     if (index == i)
-                        return expresion.evaluar(entorno).id;
+                        return expresion.evaluar(entorno,reporte).id;
                     i++;
                 }
                 return null;
@@ -112,10 +113,10 @@ namespace _OLC2__Proyecto1.interprete.instruccion
 
                     int pos = buscarPosicion(varRef.Key);
                     if (pos == -1)
-                        throw new util.ErrorPascal(0, 0, "No existe variable de referencia", "semantico");
+                        throw new util.ErrorPascal(0, 0, "No existe variable de referencia", "semantico",reporte);
                     string name = buscarNombreVariable(pos);
                     if (name == null)
-                        throw new util.ErrorPascal(0, 0, "No existe variable de referencia", "semantico");
+                        throw new util.ErrorPascal(0, 0, "No existe variable de referencia", "semantico",reporte);
                     entorno.modificarVariable(name, variable.valor, variable.tipo.tipo,variable.id);
 
                 }

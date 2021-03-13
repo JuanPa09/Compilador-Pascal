@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using _OLC2__Proyecto1.interprete.expresion;
 using System.Diagnostics;
+using _OLC2__Proyecto1.reportes;
 
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
@@ -19,7 +20,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             this.valores = valores;
         }
 
-        public override object ejecutar(Entorno entorno)
+        public override object ejecutar(Entorno entorno,Reporte reporte)
         {
 
             
@@ -31,31 +32,31 @@ namespace _OLC2__Proyecto1.interprete.instruccion
 
             //Comprobar variables
             if (funcion.varTipos.Count != valores.Count)
-                throw new util.ErrorPascal(0,0,"Numero de entradas incorrectas para la funcion \""+nombre+"\"", "semantico");
+                throw new util.ErrorPascal(0,0,"Numero de entradas incorrectas para la funcion \""+nombre+"\"", "semantico",reporte);
 
             //Asignar los valores
             funcion.valoresParametros = valores;
 
-            Simbolo retorno = (Simbolo)funcion.ejecutar(entorno); //Aca
+            Simbolo retorno = (Simbolo)funcion.ejecutar(entorno,reporte); //Aca
 
             if (retorno == null)
-                throw new util.ErrorPascal(0,0,"La funcion \""+this.nombre+"\" no devolvio ningun valor","semantico");
+                throw new util.ErrorPascal(0,0,"La funcion \""+this.nombre+"\" no devolvio ningun valor","semantico",reporte);
             return retorno;
 
         esProcedimiento:
 
             Procedimiento procedimiento = entorno.existeProcedimiento(nombre);
             if(procedimiento == null)
-                throw new util.ErrorPascal(0, 0, "La funcion/procedimiento \"" + nombre + "\" no existe", "semantico");
+                throw new util.ErrorPascal(0, 0, "La funcion/procedimiento \"" + nombre + "\" no existe", "semantico",reporte);
 
             //Comprobar variables
             if (procedimiento.varTipos.Count != valores.Count)
-                throw new util.ErrorPascal(0, 0, "Numero de entradas incorrectas para la funcion \"" + nombre + "\"", "semantico");
+                throw new util.ErrorPascal(0, 0, "Numero de entradas incorrectas para la funcion \"" + nombre + "\"", "semantico",reporte);
 
             //Asignar los valores
             procedimiento.valoresParametros = valores;
 
-            procedimiento.ejecutar(entorno); //Aca
+            procedimiento.ejecutar(entorno,reporte); //Aca
 
             return null;
 

@@ -9,12 +9,16 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using _OLC2__Proyecto1.analizador;
+using _OLC2__Proyecto1.reportes;
 using System.Diagnostics;
 
 namespace _OLC2__Proyecto1
 {
     public partial class Form1 : Form
     {
+
+        Reporte reporte;
+
         public Form1()
         {
             InitializeComponent();
@@ -26,8 +30,11 @@ namespace _OLC2__Proyecto1
             LinearNumberPascal.Font = Pascal.Font;
             CompiPascal.Select();
             AddLineNumbers(CompiPascal, LinearNumberCompiPascal);
-            CompiPascal.Text = "program prueba;\nbegin\nend.";
+            AddLineNumbers(Pascal, LinearNumberCompiPascal);
+            CompiPascal.Text = "program compiladores2;\nbegin\nend.";
+            Pascal.Text = "program compiladores2;\nbegin\nend.";
 
+            reporte = new Reporte(debuggerConsole);
 
         }
 
@@ -106,24 +113,47 @@ namespace _OLC2__Proyecto1
             }
         }
 
+        private void Pascal_MouseDown(object sender, MouseEventArgs e)
+        {
+            Pascal.Select();
+            LinearNumberPascal.DeselectAll();
+        }
+
+        private void Pascal_VScroll(object sender, EventArgs e)
+        {
+            LinearNumberPascal.Text = "";
+            AddLineNumbers(Pascal, LinearNumberPascal);
+            LinearNumberPascal.Invalidate();
+        }
+
         private void button2_Click(object sender, EventArgs e)
         {
             debuggerConsole.Text = "";
-            Debug.WriteLine("Iniciando analizador!");
-            debuggerConsole.AppendText("Iniciando Analizador!\n");
-            Analizador analizador = new Analizador(this.debuggerConsole,Consola);
+            Debug.WriteLine("Iniciando Traduccion!");
+            debuggerConsole.AppendText("Iniciando Traduccion!\n");
+            reporte.limpiarLista();
+            Analizador analizador = new Analizador(this.debuggerConsole,Pascal,reporte);
             analizador.traducir(CompiPascal.Text);
-            debuggerConsole.AppendText("Finalizando Analizador!\n");
-            Debug.WriteLine("Finalizando analizador!");
+            debuggerConsole.AppendText("Finalizando Traduccion!\n");
+            Debug.WriteLine("Finalizando Traduccion!");
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            debuggerConsole.Text = "";
             debuggerConsole.AppendText("Iniciando Ejecucion!\n");
-            Analizador analizador = new Analizador(this.debuggerConsole,Consola);
-            analizador.analizar(CompiPascal.Text);
+            reporte.limpiarLista();
+            Analizador analizador = new Analizador(this.debuggerConsole,Consola,reporte);
+            analizador.analizar(Pascal.Text);
             debuggerConsole.AppendText("Finalizando Ejecucion");
             
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            reporte.generarReporte();
+        }
+
+        
     }
 }

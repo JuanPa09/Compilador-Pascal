@@ -6,6 +6,7 @@ using Irony.Ast;
 using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
+using _OLC2__Proyecto1.reportes;
 
 namespace _OLC2__Proyecto1.analizador
 {
@@ -15,10 +16,12 @@ namespace _OLC2__Proyecto1.analizador
     {
         RichTextBox debuggerConsole;
         RichTextBox console;
+        Reporte reporte;
 
-        public Analizador(RichTextBox debugger, RichTextBox console) {
+        public Analizador(RichTextBox debugger, RichTextBox console, Reporte reporte) {
             this.debuggerConsole = debugger;
             this.console = console;
+            this.reporte = reporte;
         }
 
 
@@ -37,20 +40,22 @@ namespace _OLC2__Proyecto1.analizador
 
             if (arbol.ParserMessages.Count > 0)
             {
+                int i = 1;
                 foreach (var item in arbol.ParserMessages)
                 {
                     //Error Lexico
                     if (item.Message.Contains("Invalid character"))
                     {
-                        Debug.WriteLine("Error Sintáctico: Linea " + item.Location.Line + " Columna: " + item.Location.Column + "Mensaje: " + item.Message);
-                        debuggerConsole.AppendText("Error Sintáctico: Linea " + item.Location.Line + " Columna: " + item.Location.Column + "Mensaje: " + item.Message + "\n");
+                        Debug.WriteLine(i+") Error Sintáctico: Linea " + item.Location.Line + " Columna: " + item.Location.Column + "Mensaje: " + item.Message);
+                        debuggerConsole.AppendText("Error Sintáctico: Linea " + item.Location.Line + " Columna: " + item.Location.Column + "Mensaje: " + item.Message + "\n\n");
                     }
                     else
                     {
                         //Error Sintactico
                         Debug.WriteLine("Error Sintáctico: Linea " + item.Location.Line + " Columna: " + item.Location.Column + " Mensaje: " + item.Message);
-                        debuggerConsole.AppendText("Error Sintáctico: Linea " + item.Location.Line + " Columna: " + item.Location.Column + " Mensaje: " + item.Message + "\n");
+                        debuggerConsole.AppendText(i+") Error Sintáctico: Linea " + item.Location.Line + " Columna: " + item.Location.Column + " Mensaje: " + item.Message + "\n\n");
                     }
+                    i++;
                 }
             }
 
@@ -60,6 +65,13 @@ namespace _OLC2__Proyecto1.analizador
                 debuggerConsole.AppendText(arbol.ParserMessages[0].Message + "\n");
                 return;
             }
+
+            Traduccion traduccion = new Traduccion(raiz, console);
+            console.Text = "";
+            debuggerConsole.Text = "";
+
+            traduccion.iniciar();
+
             generarGrafo(raiz);
         }
 
@@ -77,19 +89,24 @@ namespace _OLC2__Proyecto1.analizador
 
             if (arbol.ParserMessages.Count > 0) 
             {
+                int i = 1;
                 foreach (var item in arbol.ParserMessages)
                 {
                     //Error Lexico
                     if (item.Message.Contains("Invalid character"))
                     {
                         Debug.WriteLine("Error Sintáctico: Linea " + item.Location.Line + " Columna: " + item.Location.Column + "Mensaje: " + item.Message);
-                        debuggerConsole.AppendText("Error Sintáctico: Linea " + item.Location.Line + " Columna: " + item.Location.Column + "Mensaje: " + item.Message+"\n");
+                        debuggerConsole.AppendText(i + ") Error Sintáctico: Linea " + item.Location.Line + " Columna: " + item.Location.Column + "Mensaje: " + item.Message+"\n\n");
+                        reporte.nuevoError(item.Location.Line, item.Location.Column, "Léxico", item.Message);
+
                     }
                     else {
                         //Error Sintactico
                         Debug.WriteLine("Error Sintáctico: Linea "+item.Location.Line+" Columna: "+item.Location.Column+" Mensaje: "+item.Message);
-                        debuggerConsole.AppendText("Error Sintáctico: Linea " + item.Location.Line + " Columna: " + item.Location.Column + " Mensaje: " + item.Message+"\n");
+                        debuggerConsole.AppendText(i+") Error Sintáctico: Linea " + item.Location.Line + " Columna: " + item.Location.Column + " Mensaje: " + item.Message+"\n\n");
+                        reporte.nuevoError(item.Location.Line, item.Location.Column, "Sintáctico", item.Message);
                     }
+                    i++;
                 }
             }
 
@@ -100,7 +117,9 @@ namespace _OLC2__Proyecto1.analizador
             }
 
 
-            Ejecucion ejecucion = new Ejecucion(raiz, console);
+            Ejecucion ejecucion = new Ejecucion(raiz, console,reporte);
+            console.Text = "";
+            debuggerConsole.Text = "";
             ejecucion.iniciar();
             generarGrafo(raiz);
 

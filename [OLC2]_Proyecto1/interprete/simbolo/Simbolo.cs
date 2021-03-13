@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
 namespace _OLC2__Proyecto1.interprete.simbolo
 {
     class Simbolo
@@ -21,7 +20,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
         public override string ToString()
         {
             if (valor == null)
-                throw new util.ErrorPascal(0,0,"La variable \""+id+"\" no tiene valor","semántico");
+                throw new util.ErrorPascal(0,0,"La variable \""+id+"\" no tiene valor","semántico",null);
             return this.valor.ToString();
         }
 

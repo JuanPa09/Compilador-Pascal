@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using _OLC2__Proyecto1.interprete.expresion;
 using System.Diagnostics;
+using _OLC2__Proyecto1.reportes;
 
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
@@ -22,15 +23,15 @@ namespace _OLC2__Proyecto1.interprete.instruccion
 
         }
 
-        public override object ejecutar(Entorno entorno)
+        public override object ejecutar(Entorno entorno,Reporte reporte)
         {
-            Simbolo valor = this.valor.evaluar(entorno);
+            Simbolo valor = this.valor.evaluar(entorno,reporte);
 
             //TODO verificar errores
             if (valor.tipo.tipo != Tipos.BOOLEAN)
-                throw new util.ErrorPascal(0, 0, "No es una expresion logica", "semantico");
+                throw new util.ErrorPascal(0, 0, "No es una expresion logica", "semantico",reporte);
 
-            Entorno entornoIf = new Entorno(".if",entorno);
+            Entorno entornoIf = new Entorno(".if",entorno,reporte);
             if (bool.Parse(valor.valor.ToString()))
             {
                 
@@ -40,7 +41,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                     if (instruccion!=null)
                         try
                         {
-                            return instruccion.ejecutar(entornoIf);
+                            return instruccion.ejecutar(entornoIf,reporte);
                         }
                         catch(Exception ex)
                         {
@@ -55,7 +56,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                         if(instruccion!=null)
                             try
                             {
-                                return instruccion.ejecutar(entorno);
+                                return instruccion.ejecutar(entorno,reporte);
                             }
                             catch(Exception ex) { Debug.WriteLine(ex.ToString()); }
                     }
@@ -64,5 +65,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             return null;
 
         }
+
+        
     }
 }

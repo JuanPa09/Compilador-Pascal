@@ -5,6 +5,7 @@ using System.Text;
 using _OLC2__Proyecto1.interprete.util;
 using _OLC2__Proyecto1.interprete.instruccion;
 using System.Diagnostics;
+using _OLC2__Proyecto1.reportes;
 
 namespace _OLC2__Proyecto1.interprete.expresion
 {
@@ -19,32 +20,32 @@ namespace _OLC2__Proyecto1.interprete.expresion
             this.parametro = parametro;
         }
 
-        public override Simbolo evaluar(Entorno entorno)
+        public override Simbolo evaluar(Entorno entorno,Reporte reporte)
         {
             string Nombre = "";
             string Parametro = "";
-            object evaluado = getValor(nombre, entorno);
+            object evaluado = getValor(nombre, entorno,reporte);
             if (evaluado is Objeto)
             {
-                return ((Objeto)getValor(nombre, entorno)).getValor(getValor(parametro,entorno).ToString());
+                return ((Objeto)getValor(nombre, entorno,reporte)).getValor(getValor(parametro,entorno,reporte).ToString());
             }
 
             Nombre = evaluado.ToString();
 
-            Parametro = getValor(parametro, entorno).ToString();
+            Parametro = getValor(parametro, entorno,reporte).ToString();
 
 
             Simbolo objectType = entorno.obtenerVariable(Nombre);
 
             if (objectType.tipo.tipo != Tipos.OBJECT)
-                throw new ErrorPascal(0, 0, "La variable \"" + Nombre + "\" no es un objeto", "semantico");
+                throw new ErrorPascal(0, 0, "La variable \"" + Nombre + "\" no es un objeto", "semantico",reporte);
 
             Objeto objeto = (Objeto)objectType.valor;
 
             return (objeto.getValor(Parametro));
         }
 
-        private object getValor(Expresion expresion,Entorno entorno)
+        private object getValor(Expresion expresion,Entorno entorno,Reporte reporte)
         {
             if(expresion is ObtenerVariable)
             {
@@ -52,11 +53,11 @@ namespace _OLC2__Proyecto1.interprete.expresion
             }
             else if (expresion is ObtenerObjeto)
             {
-                return nombre.evaluar(entorno).valor;
+                return nombre.evaluar(entorno,reporte).valor;
             }
             else
             {
-                throw new util.ErrorPascal(0, 0, "valor no valido para obtener objeto", "semantico");
+                throw new util.ErrorPascal(0, 0, "valor no valido para obtener objeto", "semantico",reporte);
             }
         }
     }

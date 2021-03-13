@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
+using _OLC2__Proyecto1.reportes;
 
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
@@ -17,14 +18,14 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             this.instruccionesHead = instruccionesHead;
         }
 
-        public override object ejecutar(Entorno entorno)
+        public override object ejecutar(Entorno entorno, Reporte reporte )
         {
             foreach (var instruccion in instruccionesHead)
             {
                 if (instruccion != null)
                     try
                     {
-                        instruccion.ejecutar(entorno);
+                        instruccion.ejecutar(entorno,reporte);
                     }
                     catch( Exception ex) { Debug.WriteLine(ex.ToString()); }
                     
@@ -35,7 +36,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 if (instruccion != null)
                     try
                     {
-                        instruccion.ejecutar(entorno);
+                        instruccion.ejecutar(entorno,reporte);
                     }
                     catch (Exception ex) { Debug.WriteLine(ex.ToString()); }
             }

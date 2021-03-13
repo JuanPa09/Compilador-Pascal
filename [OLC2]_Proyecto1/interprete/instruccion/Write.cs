@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using _OLC2__Proyecto1.interprete.expresion;
 using _OLC2__Proyecto1.interprete.simbolo;
 using System.Diagnostics;
+using _OLC2__Proyecto1.reportes;
 
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
@@ -21,19 +22,23 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             this.consola = consola;
         }
 
-        public override object ejecutar(Entorno entorno)
+        public override object ejecutar(Entorno entorno,Reporte reporte)
         {
             Debug.WriteLine("Ejecutando Write");
             try
             {
-                Simbolo valor = this.valor.evaluar(entorno);
+                Simbolo valor = this.valor.evaluar(entorno,reporte);
                 switch (tipo)
                 {
                     case 0:
                         try
                         {
                             if (valor.valor == null)
-                                throw new util.ErrorPascal(0, 0, "La variable \"" + valor.id + "\" no tiene valor", "semántico");
+                                throw new util.ErrorPascal(0, 0, "La variable \"" + valor.id + "\" no tiene valor", "semántico",reporte);
+
+                            if (valor.valor == null)
+                                throw new util.ErrorPascal(0, 0, "La variable \"" + valor.id + "\" no tiene valor", "semántico", reporte);
+
                             consola.AppendText(valor.valor.ToString());
                         }
                         catch (Exception ex) { Debug.WriteLine(ex.ToString()); }
@@ -42,10 +47,10 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                         try
                         {
                             if (valor == null)
-                                throw new util.ErrorPascal(0, 0, "El simbolo no tiene valor (probablemente es un procedimiento)", "semántico");
+                                throw new util.ErrorPascal(0, 0, "El simbolo no tiene valor (probablemente es un procedimiento)", "semántico",reporte);
 
                             if (valor.valor == null)
-                                throw new util.ErrorPascal(0,0,"La variable \""+valor.id+"\" no tiene valor","semántico");
+                                throw new util.ErrorPascal(0,0,"La variable \""+valor.id+"\" no tiene valor","semántico",reporte);
                             consola.AppendText(valor.valor.ToString() + "\n");
                         }
                         catch (Exception ex) { Debug.WriteLine(ex.ToString()); }

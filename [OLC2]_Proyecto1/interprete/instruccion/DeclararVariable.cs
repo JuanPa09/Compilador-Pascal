@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using _OLC2__Proyecto1.interprete.expresion;
+using _OLC2__Proyecto1.reportes;
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
     class DeclararVariable : Instruccion
@@ -17,13 +18,13 @@ namespace _OLC2__Proyecto1.interprete.instruccion
         }
         
 
-        public override object ejecutar(Entorno entorno)
+        public override object ejecutar(Entorno entorno,Reporte reporte)
         {
 
             foreach(Instruccion declaracion in listaDeclaraciones)
             {
                 if (declaracion!=null)
-                    declaracion.ejecutar(entorno);
+                    declaracion.ejecutar(entorno,reporte);
             }
 
             return null;

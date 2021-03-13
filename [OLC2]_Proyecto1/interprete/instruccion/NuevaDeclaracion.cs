@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using _OLC2__Proyecto1.interprete.expresion;
-
+using _OLC2__Proyecto1.reportes;
 
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
@@ -13,16 +13,20 @@ namespace _OLC2__Proyecto1.interprete.instruccion
         public string id;
         public Tipo tipo;
         public bool isVariable;
+        int linea,columna;
 
-        public NuevaDeclaracion(Expresion literal, string id,Tipo tipo, bool isVariable) 
+
+        public NuevaDeclaracion(Expresion literal, string id,Tipo tipo, bool isVariable,int linea,int columna) 
         {
             this.literal = literal;
             this.id = id;
             this.tipo = tipo;
             this.isVariable = isVariable;
+            this.linea = linea;
+            this.columna = columna;
         }
 
-        public override object ejecutar(Entorno entorno)
+        public override object ejecutar(Entorno entorno,Reporte reporte)
         {
             Simbolo literalEvaluado;
             Simbolo variable;
@@ -34,7 +38,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 {
                     Objeto nuevoObjeto = new Objeto((Objeto)type.valor);
                     tipo.tipo = Tipos.OBJECT;
-                    entorno.declararVariables(id,new Simbolo(nuevoObjeto,tipo,id));
+                    entorno.declararVariables(id,new Simbolo(nuevoObjeto,tipo,id),linea,columna);
                 }
                 else
                 {
@@ -46,28 +50,44 @@ namespace _OLC2__Proyecto1.interprete.instruccion
 
             if (literal != null)
             {
-                literalEvaluado = literal.evaluar(entorno);
+                literalEvaluado = literal.evaluar(entorno,reporte);
 
                 if (literalEvaluado.tipo.tipo != tipo.tipo)
-                    throw new util.ErrorPascal(0,0,"No se puede declarar la variable/constante \""+id+"\". Tipos de dato incorrecto","semántico");
+                    throw new util.ErrorPascal(0,0,"No se puede declarar la variable/constante \""+id+"\". Tipos de dato incorrecto","semántico",reporte);
 
-                variable = new Simbolo(literalEvaluado.valor, new Tipo(this.tipo.tipo,null), this.id);
+                variable = new Simbolo(literalEvaluado.valor, tipo/*new Tipo(this.tipo.tipo,null)*/, this.id);
             }
             else
             {
-                variable = new Simbolo(null, new Tipo(this.tipo.tipo, null), this.id);
+                object valorDefecto = null;
+                switch(tipo.tipo)
+                {
+                    case Tipos.NUMBER:
+                        valorDefecto = 0;
+                        break;
+                    case Tipos.STRING:
+                        valorDefecto = "";
+                        break;
+                    case Tipos.DOUBLE:
+                        valorDefecto = 0;
+                        break;
+                    case Tipos.BOOLEAN:
+                        valorDefecto = false;
+                        break;
+                }
+                variable = new Simbolo(valorDefecto, /*new Tipo(this.tipo.tipo*/tipo, this.id);
             }
 
             if (entorno.existeVariable(id) || entorno.existeConstante(id))
-                throw new util.ErrorPascal(0, 0, "Este id: \"" + id + "\" ya existe en este ambito", "semántico");
+                throw new util.ErrorPascal(0, 0, "Este id: \"" + id + "\" ya existe en este ambito", "semántico",reporte);
 
             if (isVariable)
             {
-                entorno.declararVariables(id, variable);
+                entorno.declararVariables(id, variable,linea,columna);
             }
             else
             {
-                entorno.declararConstante(id, variable);
+                entorno.declararConstante(id, variable,linea,columna);
             }
 
             return null;

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using _OLC2__Proyecto1.reportes;
 
 namespace _OLC2__Proyecto1.interprete.expresion
 {
@@ -19,15 +20,15 @@ namespace _OLC2__Proyecto1.interprete.expresion
         }
 
 
-        public override Simbolo evaluar(Entorno entorno)
+        public override Simbolo evaluar(Entorno entorno, Reporte reporte)
         {
-            Simbolo izquierda = this.izquierda.evaluar(entorno);
-            Simbolo derecha = this.derecha.evaluar(entorno);
+            Simbolo izquierda = this.izquierda.evaluar(entorno,reporte);
+            Simbolo derecha = this.derecha.evaluar(entorno,reporte);
             Tipo tipo = new Tipo(Tipos.BOOLEAN, null);
 
             Tipos tipoResultante = util.TablaTipos.getTipo(izquierda.tipo, derecha.tipo);
             if (tipoResultante == Tipos.NULLL || tipoResultante != Tipos.BOOLEAN)
-                throw new util.ErrorPascal(0, 0, "Tipos De Dato Incorrectos. No se puede realizar la operacion relacional múltiple", "Semantico");
+                throw new util.ErrorPascal(0, 0, "Tipos De Dato Incorrectos. No se puede realizar la operacion relacional múltiple", "Semantico",reporte);
 
             switch(tipoOperacion)
             {

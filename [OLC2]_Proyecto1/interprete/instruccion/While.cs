@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using _OLC2__Proyecto1.interprete.expresion;
+using _OLC2__Proyecto1.reportes;
+
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
 
@@ -18,16 +20,16 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             this.expresionLogica = expresionLogica;
         }
 
-        public override object ejecutar(Entorno entorno)
+        public override object ejecutar(Entorno entorno,Reporte reporte)
         {
-            Entorno entornoWhile = new Entorno(".while",entorno);
+            Entorno entornoWhile = new Entorno(".while",entorno,reporte);
             try
             {
                 while (true)
                 {
-                    Simbolo expresionLogica = this.expresionLogica.evaluar(entorno);
+                    Simbolo expresionLogica = this.expresionLogica.evaluar(entorno,reporte);
                     if (expresionLogica.tipo.tipo != Tipos.BOOLEAN)
-                        throw new util.ErrorPascal(0, 0, "No es una expresion logica", "semantico");
+                        throw new util.ErrorPascal(0, 0, "No es una expresion logica", "semantico",reporte);
 
                     if (bool.Parse(expresionLogica.valor.ToString()))
                     {
@@ -36,7 +38,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                             if (instruccion != null)
                                 try
                                 {
-                                    object retorno = instruccion.ejecutar(entornoWhile);
+                                    object retorno = instruccion.ejecutar(entornoWhile,reporte);
                                     if (retorno != null)
                                         if (retorno.ToString() == "break")
                                         {

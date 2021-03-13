@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using _OLC2__Proyecto1.interprete.simbolo;
+using _OLC2__Proyecto1.reportes;
 
 namespace _OLC2__Proyecto1.interprete.expresion
 {
@@ -19,15 +20,15 @@ namespace _OLC2__Proyecto1.interprete.expresion
             this.tipo = tipo;
         }
 
-        public override Simbolo evaluar(Entorno entorno)
+        public override Simbolo evaluar(Entorno entorno, Reporte reporte)
         {
-            Simbolo izquierda = this.izquierda.evaluar(entorno);
-            Simbolo derecha = this.derecha.evaluar(entorno);
+            Simbolo izquierda = this.izquierda.evaluar(entorno,reporte);
+            Simbolo derecha = this.derecha.evaluar(entorno,reporte);
             Simbolo resultado;
             Tipos tipoResultante = util.TablaTipos.getTipo(izquierda.tipo,derecha.tipo);
 
             if (tipoResultante != Tipos.NUMBER && tipo != '+')
-                throw new Exception(); // Cambiar Exception por errorPascal
+                throw new util.ErrorPascal(0,0,"Operacion invalida","semantico",reporte); // Cambiar Exception por errorPascal
 
             switch (tipo)
             {

@@ -4,6 +4,7 @@ using System.Text;
 using _OLC2__Proyecto1.interprete.expresion;
 using _OLC2__Proyecto1.interprete.simbolo;
 using System.Diagnostics;
+using _OLC2__Proyecto1.reportes;
 
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
@@ -22,25 +23,25 @@ namespace _OLC2__Proyecto1.interprete.instruccion
         }
         
 
-        public override object ejecutar(Entorno entorno)
+        public override object ejecutar(Entorno entorno,Reporte reporte)
         {
-            Simbolo valorReal = valor.evaluar(entorno);
+            Simbolo valorReal = valor.evaluar(entorno,reporte);
             Dictionary<object, LinkedList<Instruccion>>  casosEvaluados = new Dictionary<object, LinkedList<Instruccion>>();
             foreach(KeyValuePair<Expresion,LinkedList<Instruccion>> entry in casos)
             {
-                casosEvaluados.Add(entry.Key.evaluar(entorno).valor,entry.Value);
+                casosEvaluados.Add(entry.Key.evaluar(entorno,reporte).valor,entry.Value);
             }
 
             try
             {
-                Entorno entornoCasos = new Entorno(".caso",entorno);
+                Entorno entornoCasos = new Entorno(".caso",entorno,reporte);
                 if (casosEvaluados.Count != 0 && casosEvaluados.ContainsKey(valorReal.valor))
                 {
                     foreach (Instruccion instruccion in casosEvaluados[valorReal.valor])
                     {
                         try
                         {
-                            return instruccion.ejecutar(entornoCasos);
+                            return instruccion.ejecutar(entornoCasos,reporte);
                         }
                         catch (Exception ex) { Debug.WriteLine(ex.ToString()); }
                     }
@@ -51,7 +52,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 {
                     try
                     {
-                        return instruccion.ejecutar(entornoCasos);
+                        return instruccion.ejecutar(entornoCasos,reporte);
                     }
                     catch (Exception ex) { Debug.WriteLine(ex.ToString()); }
                 }

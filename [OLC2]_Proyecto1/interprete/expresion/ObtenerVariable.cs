@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using _OLC2__Proyecto1.reportes;
 
 namespace _OLC2__Proyecto1.interprete.expresion
 {
@@ -19,7 +20,7 @@ namespace _OLC2__Proyecto1.interprete.expresion
             return this.id;
         }
 
-        public override Simbolo evaluar(Entorno entorno)
+        public override Simbolo evaluar(Entorno entorno, Reporte reporte)
         {
             Simbolo variable = entorno.existeLaVariable(id);
             if (variable == null)
@@ -30,7 +31,7 @@ namespace _OLC2__Proyecto1.interprete.expresion
                 return entorno.obtenerVariable(id);
             if (entorno.existeConstante(id))
                 return entorno.obtenerConstane(id);*/
-            throw new util.ErrorPascal(0,0,"No se puede obtener el valor de \""+id+"\" porque no esta declarado","semantico");
+            throw new util.ErrorPascal(0,0,"No se puede obtener el valor de \""+id+"\" porque no esta declarado","semantico",reporte);
         }
     }
 }

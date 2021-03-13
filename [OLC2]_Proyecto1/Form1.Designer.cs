@@ -117,14 +117,18 @@ namespace _OLC2__Proyecto1
             // 
             // Pascal
             // 
+            this.Pascal.AcceptsTab = true;
             this.Pascal.Font = new System.Drawing.Font("Courier New", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.Pascal.Location = new System.Drawing.Point(760, 75);
             this.Pascal.Name = "Pascal";
             this.Pascal.Size = new System.Drawing.Size(542, 417);
             this.Pascal.TabIndex = 6;
             this.Pascal.Text = "";
+            this.Pascal.WordWrap = false;
             this.Pascal.SelectionChanged += new System.EventHandler(this.Pascal_SelectionChanged);
+            this.Pascal.VScroll += new System.EventHandler(this.Pascal_VScroll);
             this.Pascal.TextChanged += new System.EventHandler(this.Pascal_TextChanged);
+            this.Pascal.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Pascal_MouseDown);
             // 
             // Consola
             // 
@@ -175,6 +179,7 @@ namespace _OLC2__Proyecto1
             this.button3.TabIndex = 11;
             this.button3.Text = "Reportes";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // debuggerConsole
             // 

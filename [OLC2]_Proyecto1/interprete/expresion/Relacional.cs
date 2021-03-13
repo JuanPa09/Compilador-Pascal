@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using _OLC2__Proyecto1.reportes;
 
 namespace _OLC2__Proyecto1.interprete.expresion
 {
@@ -20,17 +21,17 @@ namespace _OLC2__Proyecto1.interprete.expresion
         }
 
 
-        public override Simbolo evaluar(Entorno entorno)
+        public override Simbolo evaluar(Entorno entorno,Reporte reporte)
         {
             Tipo tipo = new Tipo(Tipos.BOOLEAN, null);
-            Simbolo izquierda = this.izquierda.evaluar(entorno);
+            Simbolo izquierda = this.izquierda.evaluar(entorno,reporte);
             if (this.derecha == null)
                 return getValor(izquierda);
-            Simbolo derecha = this.derecha.evaluar(entorno);
+            Simbolo derecha = this.derecha.evaluar(entorno,reporte);
 
             Tipos tipoResultante = util.TablaTipos.getTipo(izquierda.tipo,derecha.tipo);
             if (tipoResultante == Tipos.NULLL)
-                throw new util.ErrorPascal(0,0,"Tipos De Dato Incorrectos","Semantico");
+                throw new util.ErrorPascal(0,0,"Tipos De Dato Incorrectos","Semantico",reporte);
 
             switch (tipoOperacion)
             {
@@ -55,7 +56,7 @@ namespace _OLC2__Proyecto1.interprete.expresion
             Simbolo getValor(Simbolo izquierda)
             {
                 if (izquierda.tipo.tipo != Tipos.BOOLEAN)
-                    throw new util.ErrorPascal(0, 0, "La entrada no es de tipo booleano", "semántico");
+                    throw new util.ErrorPascal(0, 0, "La entrada no es de tipo booleano", "semántico",reporte);
                 return new Simbolo(bool.Parse(izquierda.ToString())==true,tipo,null);
             }
 

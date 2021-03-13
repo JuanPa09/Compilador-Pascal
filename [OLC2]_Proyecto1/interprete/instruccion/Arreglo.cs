@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
+using _OLC2__Proyecto1.reportes;
 
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
@@ -23,7 +24,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             diccionario = new Dictionary<int, object>();
     }
 
-        public override object ejecutar(Entorno entorno)
+        public override object ejecutar(Entorno entorno,Reporte reporte)
         {
             
             if (hijo == null)
@@ -46,5 +47,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             }
             return null;
         }
+
+        
     }
 }
