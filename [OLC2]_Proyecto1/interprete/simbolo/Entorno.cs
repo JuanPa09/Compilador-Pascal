@@ -198,7 +198,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
         public Funcion existeFuncion(string id)
         {
             Entorno actual = this;
-            Debug.WriteLine("Nombre Entorno -> "+actual.nombre.ToString());
+            //Debug.WriteLine("Nombre Entorno -> "+actual.nombre.ToString());
             while (actual != null)
             {
                 if (actual.funciones.ContainsKey(id))

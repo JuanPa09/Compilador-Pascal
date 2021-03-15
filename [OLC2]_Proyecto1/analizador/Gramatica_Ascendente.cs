@@ -641,7 +641,7 @@ namespace _OLC2__Proyecto1.analizador
             #region Preferencias
             this.Root = Raiz;
             this.RegisterOperators(1, Associativity.Left, Mas, Menos);
-            this.RegisterOperators(2, Associativity.Left, Por, Div, Pt,Llamada,A);
+            this.RegisterOperators(2, Associativity.Left, Por, Div,Divi, Pt,Llamada,A);
             this.RegisterOperators(3, Associativity.Left, Mod);
             this.RegisterOperators(4, Associativity.Left, Then, Else);
             this.RegisterOperators(5, Associativity.Left, Var, Identificador);
