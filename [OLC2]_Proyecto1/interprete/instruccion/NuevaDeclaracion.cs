@@ -43,6 +43,13 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 else
                 {
                     //Es array
+                    Dictionary<int,object> nuevoArreglo = new Dictionary<int, object>((Dictionary<int, object>)type.valor);
+
+                    //tipo.tipo = Tipos.ARRAY;
+                    //entorno.tipoArreglo[id] = entorno.tipoArreglo[tipo.tipoAuxiliar];[
+                    tipo.tipo = Tipos.ARRAY;
+                    entorno.tipoArreglo.Add(id,entorno.buscarTipoArreglo(type.id));
+                    entorno.declararVariables(id, new Simbolo(nuevoArreglo, tipo, id), linea, columna);
                 }
                 return null;
             }

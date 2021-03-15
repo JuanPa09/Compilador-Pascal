@@ -41,7 +41,12 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                     {
                         try
                         {
-                            return instruccion.ejecutar(entornoCasos,reporte);
+                            
+                            object retorno = instruccion.ejecutar(entornoCasos,reporte);
+                            if (retorno != null)
+                            {
+                                return retorno;
+                            }
                         }
                         catch (Exception ex) { Debug.WriteLine(ex.ToString()); }
                     }
@@ -52,7 +57,11 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 {
                     try
                     {
-                        return instruccion.ejecutar(entornoCasos,reporte);
+                        object retorno = instruccion.ejecutar(entornoCasos,reporte);
+                        if (retorno != null)
+                        {
+                            return retorno;
+                        }
                     }
                     catch (Exception ex) { Debug.WriteLine(ex.ToString()); }
                 }

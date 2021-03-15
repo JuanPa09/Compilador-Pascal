@@ -5,6 +5,7 @@ using _OLC2__Proyecto1.interprete.instruccion;
 using System.Diagnostics;
 using _OLC2__Proyecto1.reportes;
 using System.IO;
+using System.Globalization;
 
 namespace _OLC2__Proyecto1.interprete.simbolo
 {
@@ -24,6 +25,8 @@ namespace _OLC2__Proyecto1.interprete.simbolo
 
         public Entorno padre;
         public Reporte reporte;
+
+        int noReporte = 1; //Para llevar el control de los reportes de simbolos
 
 
         public Entorno(string nombreEntorno,Entorno padre,Reporte reporte)
@@ -49,6 +52,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
                 this.types.Add(id, variable);
                 this.columna.Add(id, columna);
                 this.linea.Add(id,linea);
+                this.reporte.nuevoSimbolo(id, variable.tipo.tipo.ToString(), this.nombre, linea, columna);
 
             }
             else
@@ -78,6 +82,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
                 this.variables.Add(id, variable);
                 this.linea.Add(id,linea);
                 this.columna.Add(id,columna);
+                this.reporte.nuevoSimbolo(id, variable.tipo.tipo.ToString(), this.nombre, linea, columna);
             }
             else
             {
@@ -92,6 +97,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
                 this.constantes.Add(id, variable);
                 this.linea.Add(id, linea);
                 this.columna.Add(id,columna);
+                this.reporte.nuevoSimbolo(id, variable.tipo.tipo.ToString(), this.nombre, linea, columna);
             }
             else
             {
@@ -126,21 +132,45 @@ namespace _OLC2__Proyecto1.interprete.simbolo
         public object modificarVariable(string id,object valor,Tipos tipo,string idVariable)
         {
 
-            Entorno actual = this;
+            /*Entorno actual = this;
             if (actual.variables.ContainsKey(id))
             {
-                Simbolo simbolo = variables[id];
+                Simbolo simbolo = actual.variables[id];
                 if (simbolo.tipo.tipo != tipo)
                     throw new util.ErrorPascal(0,0,"No se pudo asignar a la variable \""+id.ToString()+"\" el valor \""+valor.ToString()+"\" porque los datos no coinciden","semántico",reporte);
                 if (simbolo.tipo.tipo == Tipos.ARRAY)
-                    tipoArreglo.Add(id,getTipoArray(idVariable));
+                    actual.tipoArreglo.Add(id,getTipoArray(idVariable));
                 simbolo.valor = valor;
-                variables[id] = simbolo;
+                actual.variables[id] = simbolo;
                 if (id == nombre) // Si es un retorno de funcion
                     return new Simbolo(valor, new Tipo(tipo,null), null);
                 return null;
             }
-            throw new util.ErrorPascal(0, 0, "La variable \"" + id + "\" no ha sido declarada", "semántico",reporte);
+            throw new util.ErrorPascal(0, 0, "La variable \"" + id + "\" no ha sido declarada", "semántico",reporte);*/
+
+            Entorno actual = this;
+
+            while (actual!=null)
+            {
+                if (actual.variables.ContainsKey(id))
+                {
+                    Simbolo simbolo = actual.variables[id];
+                    if (simbolo.tipo.tipo != tipo)
+                        throw new util.ErrorPascal(0, 0, "No se pudo asignar a la variable \"" + id.ToString() + "\" el valor \"" + valor.ToString() + "\" porque los datos no coinciden", "semántico", reporte);
+                    /*if (simbolo.tipo.tipo == Tipos.ARRAY)
+                        actual.tipoArreglo.Add(id, getTipoArray(idVariable));*/
+                    simbolo.valor = valor;
+                    actual.variables[id] = simbolo;
+                    if (id == nombre) // Si es un retorno de funcion
+                        return new Simbolo(valor, new Tipo(tipo, null), null);
+                    return null;
+                }
+                actual = actual.padre;
+            }
+
+            throw new util.ErrorPascal(0, 0, "La variable \"" + id + "\" no ha sido declarada", "semántico", reporte);
+
+
         }
 
         public Entorno buscarEntornoVariable(string id)
@@ -162,6 +192,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
             this.funciones.Add(nombre, funcion);
             this.linea.Add(nombre,linea);
             this.columna.Add(nombre,columna);
+            this.reporte.nuevoSimbolo(nombre, "Funcion", this.nombre, linea, columna);
         }
 
         public Funcion existeFuncion(string id)
@@ -185,6 +216,7 @@ namespace _OLC2__Proyecto1.interprete.simbolo
             this.linea.Add(nombre, linea);
             this.columna.Add(nombre,columna);
             this.procedimiento.Add(nombre, procedimiento);
+            this.reporte.nuevoSimbolo(nombre, "Procedimiento", this.nombre, linea, columna);
         }
 
         public Procedimiento existeProcedimiento(string id)
@@ -253,12 +285,29 @@ namespace _OLC2__Proyecto1.interprete.simbolo
         }
 
 
-
-        public void graficarSimbolos()
+        public Tipos buscarTipoArreglo(string nombre)
         {
             Entorno actual = this;
 
-            string path = "C:\\compiladores2\\grafSimbolos.html";
+            while (actual != null)
+            {
+                if (actual.tipoArreglo.ContainsKey(nombre))
+                    return actual.tipoArreglo[nombre];
+                actual = actual.padre;
+            }
+            throw new util.ErrorPascal(0,0,"No se pudo encontrar el arreglo","semantico",null);
+
+        }
+
+
+
+        public void graficarSimbolos()
+        {
+            
+
+            Entorno actual = this;
+
+            string path = "C:\\compiladores2\\"+this.noReporte+"_"+this.nombre+"_graficar_Ts().html";
 
             string reporte = "<html><title>Errores Lexicos</title><body><center><h1>Reporte De Errores</h1></center><br><br><center>";
             reporte += "<table style=\"width: 100%\">";

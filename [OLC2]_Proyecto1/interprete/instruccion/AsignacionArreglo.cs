@@ -58,7 +58,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                      else
                      {
                          Simbolo valExpresion = expresion.evaluar(entorno,reporte);
-                         if (valExpresion.tipo.tipo != entorno.getTipoArray(nombre))
+                        if (valExpresion.tipo.tipo != entorno.getTipoArray(nombre) && entorno.tipoArreglo[nombre] != valExpresion.tipo.tipo)
                              throw new util.ErrorPascal(0,0,"No se puede asignar tipos de datos diferentes en el arreglo \""+nombre+"\"","semantico",reporte); 
                          diccionario[indice] = valExpresion.valor;
 

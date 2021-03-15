@@ -117,7 +117,7 @@ namespace _OLC2__Proyecto1.analizador
                     return evaluarIf(actual.ChildNodes[0]);
                 case "For_Statement":
                     actual = actual.ChildNodes[0];
-                    return new For(evaluarExpresionNumerica(actual.ChildNodes[4]), evaluarExpresionNumerica(actual.ChildNodes[6]), actual.ChildNodes[1].Token.Text, instrucciones(actual.ChildNodes[9]), actual.ChildNodes[4].Token.Location.Line, actual.ChildNodes[4].Token.Location.Column);
+                    return new For(evaluarExpresionNumerica(actual.ChildNodes[4]), evaluarExpresionNumerica(actual.ChildNodes[6]), actual.ChildNodes[1].Token.Text, instrucciones(actual.ChildNodes[9]), actual.ChildNodes[3].Token.Location.Line, actual.ChildNodes[3].Token.Location.Column,actual.ChildNodes[5].Token.Text);
                 case "While_Statement":
                     return evaluarWhile(actual.ChildNodes[0]);
                 case "Repeat_Statement":
@@ -152,12 +152,12 @@ namespace _OLC2__Proyecto1.analizador
 
         public Instruccion evaluarType(ParseTreeNode actual)
         {
-            switch(actual.ChildNodes[0].Term.ToString())
+            switch (actual.ChildNodes[0].Term.ToString())
             {
                 case "Objeto":
-                    return nuevoObjeto(actual.ChildNodes[0]) ;
+                    return nuevoObjeto(actual.ChildNodes[0]);
                 case "Tipo_Array":
-                    return null;
+                    return nuevoTypeArray(actual.ChildNodes[0]);
             }
             return null;
         }
@@ -167,6 +167,14 @@ namespace _OLC2__Proyecto1.analizador
             LinkedList<Instruccion> variables = new LinkedList<Instruccion>();
             evaluarVarConst(actual.ChildNodes[4],ref variables);
             return new DeclararObjeto(actual.ChildNodes[1].Token.Text,variables,actual.ChildNodes[1].Token.Location.Line,actual.ChildNodes[1].Token.Location.Column);
+        }
+
+        public Instruccion nuevoTypeArray(ParseTreeNode actual)
+        {
+            LinkedList<Dictionary<string, int>> diccionarios = new LinkedList<Dictionary<string, int>>();
+            getDimensiones(actual.ChildNodes[5], ref diccionarios);
+            return new TypeArreglo(actual.ChildNodes[1].Token.Text, diccionarios, getTipo(actual.ChildNodes[8]), actual.ChildNodes[1].Token.Location.Line, actual.ChildNodes[1].Token.Location.Column);
+
         }
 
         public void evaluarVarConst(ParseTreeNode actual, ref LinkedList<Instruccion> listaDeclaraciones)
@@ -216,7 +224,7 @@ namespace _OLC2__Proyecto1.analizador
                     else
                     {
                         //Tiene ,
-                        listaDeclaraciones = variosIds(actual.ChildNodes[2], actual.ChildNodes[0].Token.Text, getTipo(actual.ChildNodes[4]), ref listaDeclaraciones,isVariable);
+                        listaDeclaraciones = variosIds(actual.ChildNodes[2], actual.ChildNodes[0].Token.Text, getTipo(actual.ChildNodes[4]), ref listaDeclaraciones,isVariable,actual.ChildNodes[0].Token.Location.Line,actual.ChildNodes[0].Token.Location.Column);
                     }
                     break;
                 case 9:
@@ -251,16 +259,16 @@ namespace _OLC2__Proyecto1.analizador
             }
         }
 
-        public LinkedList<Instruccion> variosIds(ParseTreeNode actual, string id, Tipo tipo, ref LinkedList<Instruccion> listaDeclaraciones,bool isVariable)
+        public LinkedList<Instruccion> variosIds(ParseTreeNode actual, string id, Tipo tipo, ref LinkedList<Instruccion> listaDeclaraciones,bool isVariable,int linea, int columna)
         {
             // listaDeclaraciones.AddLast(NuevaDeclaracion(expresionCadena(actual.ChildNodes)))
             LinkedList<string> variables = listaVariables(actual, new LinkedList<string>());
 
-            listaDeclaraciones.AddLast(new NuevaDeclaracion(null, id, tipo, isVariable, actual.Token.Location.Line, actual.Token.Location.Column));
+            listaDeclaraciones.AddLast(new NuevaDeclaracion(null, id, tipo, isVariable, linea,columna));
 
             foreach (string identificador in variables)
             {
-                listaDeclaraciones.AddLast(new NuevaDeclaracion(null, identificador, tipo, isVariable, actual.ChildNodes[0].Token.Location.Line, actual.ChildNodes[0].Token.Location.Column));
+                listaDeclaraciones.AddLast(new NuevaDeclaracion(null, identificador, tipo, isVariable, linea, columna));
             }
 
             return listaDeclaraciones;
@@ -402,15 +410,18 @@ namespace _OLC2__Proyecto1.analizador
 
         public Case casePrima(Expresion valor, Dictionary<Expresion, LinkedList<Instruccion>> casos, ParseTreeNode actual)
         {
+            if (actual.ChildNodes.Count == 0)
+                return new Case(valor, casos, new LinkedList<Instruccion>());
+
+
             switch (actual.ChildNodes[0].Term.ToString())
             {
                 case "Cases_Statement":
                     return cases(valor,casos,actual.ChildNodes[0]);
                 case "Case_Else_Statement":
                     return new Case(valor,casos,CaseElse(actual.ChildNodes[0]));
-                default:
-                    return new Case(valor, casos, new LinkedList<Instruccion>());
             }
+            return null;
         }
 
         public LinkedList<Instruccion> CaseElse(ParseTreeNode actual)
@@ -577,7 +588,7 @@ namespace _OLC2__Proyecto1.analizador
             if (actual.ChildNodes.Count == 3)
             {
                 string operador = actual.ChildNodes[1].Token.Text;
-                switch (operador)
+                switch (operador.ToLower())
                 {
                     case "+":
                         return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '+');
@@ -587,6 +598,8 @@ namespace _OLC2__Proyecto1.analizador
                         return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '*');
                     case "/":
                         return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), '/');
+                    case "div":
+                        return new Aritmetica(evaluarExpresionNumerica(actual.ChildNodes[0]), evaluarExpresionNumerica(actual.ChildNodes[2]), 'd');
                     case ".":
                         return new ObtenerObjeto(evaluarExpresionNumerica(actual.ChildNodes[0]),evaluarExpresionNumerica(actual.ChildNodes[2]));
                     default:
@@ -653,7 +666,15 @@ namespace _OLC2__Proyecto1.analizador
             {
                 //Buscar Identificador
                 if(actual.ChildNodes.Count != 0)
-                    return new Relacional(new ObtenerVariable(actual.ChildNodes[0].Token.Text),null,"unica");
+                    if (actual.ChildNodes[0].Token != null)
+                    {
+                        return new Relacional(new ObtenerVariable(actual.ChildNodes[0].Token.Text), null, "unica");
+                    }
+                    else
+                    {
+                        //Es una llamada
+                        return new Relacional(evaluarNuevaLlamada(actual.ChildNodes[0]), null, "unica");
+                    }
                 if (actual.Token.Text.ToLower() == "true")
                 {
                     return new Relacional(new Literal('T', true), null, "unica");

@@ -1,22 +1,22 @@
 ﻿using _OLC2__Proyecto1.interprete.simbolo;
+using _OLC2__Proyecto1.reportes;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Diagnostics;
-using _OLC2__Proyecto1.reportes;
 
 namespace _OLC2__Proyecto1.interprete.instruccion
 {
-    class NuevoArreglo : Instruccion
+    class TypeArreglo : Instruccion
     {
-        private Dictionary<int,object> arreglo = new Dictionary<int, object>();
+        private Dictionary<int, object> arreglo = new Dictionary<int, object>();
         LinkedList<Dictionary<string, int>> dimensiones; //max;val min;val -> * Las dimensiones vienen de derecha a izquierda
         object valorDefecto;
         string nombre;
         Tipo tipo;
-        int fila, columna,tipoDatoValorDefecto;
+        int fila, columna;
+        int tipoDatoValorDefecto; //0->normal ; 1->Array , 2->Objeto
 
-        public NuevoArreglo(string nombre,LinkedList<Dictionary<string,int>> dimensiones,Tipo tipo, int fila, int columna)
+        public TypeArreglo(string nombre, LinkedList<Dictionary<string, int>> dimensiones, Tipo tipo, int fila, int columna)
         {
             this.tipo = tipo;
             this.nombre = nombre;
@@ -25,17 +25,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             this.columna = columna;
         }
 
-        public NuevoArreglo(NuevoArreglo arreglo)
-        {
-            this.arreglo = arreglo.arreglo;
-            this.dimensiones = arreglo.dimensiones;
-            this.valorDefecto = arreglo.valorDefecto;
-            this.tipo = arreglo.tipo;
-            this.fila = arreglo.fila;
-            this.columna = arreglo.columna;
-        }
-
-        public override object ejecutar(Entorno entorno,Reporte reporte)
+        public override object ejecutar(Entorno entorno, Reporte reporte)
         {
 
             switch (tipo.tipo)
@@ -59,11 +49,11 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 case Tipos.TYPE:
                     Simbolo Valorestype = entorno.types[tipo.tipoAuxiliar];
 
-
+                    
                     if (Valorestype.tipo.tipo == Tipos.ARRAY)
                     {
                         //Es un arreglo de arreglos
-                        valorDefecto = new Dictionary<int, object>((Dictionary<int, object>)Valorestype.valor);
+                        valorDefecto = new Dictionary<int,object>((Dictionary<int,object>)Valorestype.valor);
                         tipoDatoValorDefecto = 1;
                     }
                     else
@@ -82,17 +72,23 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             {
                 int min = dimension["min"];
                 int max = dimension["max"];
-                hijo = new Arreglo(hijo, min, max, this.valorDefecto, tipoDatoValorDefecto);
+                hijo = new Arreglo(hijo, min, max, this.valorDefecto,tipoDatoValorDefecto);
                 hijo.ejecutar(entorno, reporte);
             }
 
-            entorno.declararVariables(this.nombre, new Simbolo(new Dictionary<int, object>(hijo.diccionario), new Tipo(Tipos.ARRAY, null), nombre), fila, columna);
-            entorno.tipoArreglo.Add(nombre, tipo.tipo);
+            entorno.declararType(this.nombre, new Simbolo(new Dictionary<int, object>(hijo.diccionario), new Tipo(Tipos.ARRAY, null), nombre), fila, columna);
+            if (tipo.tipoAuxiliar != null)
+            {
+                entorno.tipoArreglo.Add(nombre, entorno.types[tipo.tipoAuxiliar].tipo.tipo);
+            }
+            else
+            {
+                entorno.tipoArreglo.Add(nombre, tipo.tipo);
+            }
+            
 
             return null;
+
         }
-
-
-
     }
 }

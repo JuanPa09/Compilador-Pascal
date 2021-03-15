@@ -3,13 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using _OLC2__Proyecto1.reportes;
+using _OLC2__Proyecto1.interprete.instruccion;
 
 namespace _OLC2__Proyecto1.interprete.expresion
 {
     class Relacional : Expresion
     {
-        private Expresion izquierda;
+        private Expresion izquierda = null;
         private Expresion derecha;
+        private Instruccion llamada = null;
         private string tipoOperacion;
 
 
@@ -20,11 +22,32 @@ namespace _OLC2__Proyecto1.interprete.expresion
             this.tipoOperacion = tipoOperacion;
         }
 
+        public Relacional(Instruccion izquierda, Instruccion derecha, string tipoOperacion)
+        {
+            this.llamada = izquierda;
+            this.tipoOperacion = tipoOperacion;
+        }
+
 
         public override Simbolo evaluar(Entorno entorno,Reporte reporte)
         {
             Tipo tipo = new Tipo(Tipos.BOOLEAN, null);
-            Simbolo izquierda = this.izquierda.evaluar(entorno,reporte);
+
+            Simbolo izquierda = null;
+            if (llamada == null)
+            {
+                izquierda = this.izquierda.evaluar(entorno, reporte);
+            }
+            else
+            {
+                object retornoLlamada = this.llamada.ejecutar(entorno,reporte);
+                if (retornoLlamada == null)
+                    throw new util.ErrorPascal(0,0,"La llamada no retorno ningun valor","semantico",reporte);
+                izquierda = (Simbolo)retornoLlamada;
+                    
+            }
+
+            //Simbolo izquierda = this.izquierda.evaluar(entorno,reporte);
             if (this.derecha == null)
                 return getValor(izquierda);
             Simbolo derecha = this.derecha.evaluar(entorno,reporte);

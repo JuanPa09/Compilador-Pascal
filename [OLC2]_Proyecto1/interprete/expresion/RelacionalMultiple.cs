@@ -30,7 +30,7 @@ namespace _OLC2__Proyecto1.interprete.expresion
             if (tipoResultante == Tipos.NULLL || tipoResultante != Tipos.BOOLEAN)
                 throw new util.ErrorPascal(0, 0, "Tipos De Dato Incorrectos. No se puede realizar la operacion relacional múltiple", "Semantico",reporte);
 
-            switch(tipoOperacion)
+            switch(tipoOperacion.ToLower())
             {
                 case "and":
                     return new Simbolo(bool.Parse(izquierda.ToString()) && bool.Parse(derecha.ToString()), tipo, null);

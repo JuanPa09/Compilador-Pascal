@@ -14,7 +14,8 @@ namespace _OLC2__Proyecto1.interprete.instruccion
         private string id;
         private LinkedList<Instruccion> instrucciones;
         int linea, columna;
-        public For(Expresion valInicio, Expresion valFinal, string id, LinkedList<Instruccion> instrucciones,int linea, int columna)
+        string tipo;
+        public For(Expresion valInicio, Expresion valFinal, string id, LinkedList<Instruccion> instrucciones,int linea, int columna,string tipo)
         {
             this.valInicio = valInicio;
             this.valFinal = valFinal;
@@ -22,6 +23,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             this.instrucciones = instrucciones;
             this.linea = linea;
             this.columna = columna;
+            this.tipo = tipo;
         }
 
         public override object ejecutar(Entorno entorno, Reporte reporte)
@@ -39,37 +41,75 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 int inicio = int.Parse(valorInicial.valor.ToString());
                 int final = int.Parse(valorFinal.valor.ToString());
 
-                while (inicio <= final)
+                if (tipo.ToLower() == "to")
                 {
-
-                    foreach (Instruccion instruccion in instrucciones)
+                    while (inicio <= final)
                     {
-                        if (instruccion != null)
-                            try
-                            {
-                                object retorno = instruccion.ejecutar(entornoFor,reporte);
-                                if (retorno != null)
-                                    if (retorno.ToString() == "break")
-                                    {
-                                        goto Fin;
-                                    }
-                                    else if (retorno.ToString() == "continue")
-                                    {
-                                        goto Continuar;
-                                    }
-                                    else
-                                    {
-                                        return retorno;
-                                    }
-                            }
-                            catch (Exception ex) { ex.ToString(); }
-                    }
+
+                        foreach (Instruccion instruccion in instrucciones)
+                        {
+                            if (instruccion != null)
+                                try
+                                {
+                                    object retorno = instruccion.ejecutar(entornoFor, reporte);
+                                    if (retorno != null)
+                                        if (retorno.ToString() == "break")
+                                        {
+                                            goto Fin;
+                                        }
+                                        else if (retorno.ToString() == "continue")
+                                        {
+                                            goto Continuar;
+                                        }
+                                        else
+                                        {
+                                            return retorno;
+                                        }
+                                }
+                                catch (Exception ex) { ex.ToString(); }
+                        }
 
                     Continuar:;
-                    inicio++;
-                    entornoFor.modificarVariable(id, inicio,Tipos.NUMBER,null);
-                    
+                        inicio++;
+                        entornoFor.modificarVariable(id, inicio, Tipos.NUMBER, null);
 
+
+                    }
+                }
+                else
+                {
+                    while (inicio >= final)
+                    {
+
+                        foreach (Instruccion instruccion in instrucciones)
+                        {
+                            if (instruccion != null)
+                                try
+                                {
+                                    object retorno = instruccion.ejecutar(entornoFor, reporte);
+                                    if (retorno != null)
+                                        if (retorno.ToString() == "break")
+                                        {
+                                            goto Fin;
+                                        }
+                                        else if (retorno.ToString() == "continue")
+                                        {
+                                            goto Continuar;
+                                        }
+                                        else
+                                        {
+                                            return retorno;
+                                        }
+                                }
+                                catch (Exception ex) { ex.ToString(); }
+                        }
+
+                    Continuar:;
+                        inicio--;
+                        entornoFor.modificarVariable(id, inicio, Tipos.NUMBER, null);
+
+
+                    }
                 }
 
 

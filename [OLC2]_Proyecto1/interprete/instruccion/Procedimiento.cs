@@ -102,6 +102,18 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                 return null;
             }
 
+            Expresion getArreglo(int index)
+            {
+                int i = 1;
+                foreach (Expresion expresion in valoresParametros)
+                {
+                    if (index == i)
+                        return expresion;
+                    i++;
+                }
+                return null;
+            }
+
             void agregarValoresReferenciados()
             {
                 foreach (KeyValuePair<string, Instruccion> varRef in variables_Referencia)
@@ -116,8 +128,24 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                         throw new util.ErrorPascal(0, 0, "No existe variable de referencia", "semantico",reporte);
                     string name = buscarNombreVariable(pos);
                     if (name == null)
-                        throw new util.ErrorPascal(0, 0, "No existe variable de referencia", "semantico",reporte);
-                    entorno.modificarVariable(name, variable.valor, variable.tipo.tipo,variable.id);
+                    {
+                        //Puede ser un arreglo
+                        Expresion valArreglo = getArreglo(pos);
+                        if (!(valArreglo is ObtenerArreglo))
+                            throw new util.ErrorPascal(0, 0, "No existe variable de referencia", "semantico", reporte);
+
+                        ObtenerArreglo arreglo = (ObtenerArreglo)valArreglo;
+                        AsignacionArreglo asignacionArreglo = new AsignacionArreglo(arreglo.nombre,arreglo.valores,new Sim(variable));
+                        asignacionArreglo.ejecutar(entorno,reporte);
+
+                    }
+                    else
+                    {
+                        entorno.modificarVariable(name, variable.valor, variable.tipo.tipo, variable.id);
+                        //throw new util.ErrorPascal(0, 0, "No existe variable de referencia", "semantico", reporte);
+                    }
+                        
+                    
 
                 }
             }

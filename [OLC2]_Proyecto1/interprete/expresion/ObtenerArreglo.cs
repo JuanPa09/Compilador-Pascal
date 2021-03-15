@@ -9,8 +9,8 @@ namespace _OLC2__Proyecto1.interprete.expresion
 {
     class ObtenerArreglo : Expresion
     {
-        string nombre;
-        LinkedList<Expresion> valores;
+        public string nombre;
+        public LinkedList<Expresion> valores;
         public ObtenerArreglo(string nombre,LinkedList<Expresion>valores)
         {
             this.nombre = nombre;

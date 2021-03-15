@@ -125,14 +125,11 @@ namespace _OLC2__Proyecto1.analizador
 
         }
 
-        
-        
-
         public void generarGrafo(ParseTreeNode raiz) 
         {
 
             string grafoDot = Graficador.getDot(raiz);
-            string path = "ast.txt";
+            string path = "C:\\compiladores2\\ast.txt";
             try
             {
                 using (FileStream fs = File.Create(path))
@@ -147,5 +144,47 @@ namespace _OLC2__Proyecto1.analizador
                 Debug.WriteLine(ex.ToString());
             }
         }
+
+
+        public void reporteAst(string cadena)
+        {
+            try
+            {
+                Gramatica_Ascendente gramatica = new Gramatica_Ascendente();
+                LanguageData lenguaje = new LanguageData(gramatica);
+                foreach (var item in lenguaje.Errors)
+                {
+                    Debug.WriteLine(item);
+                }
+
+                Parser parser = new Parser(lenguaje);
+                ParseTree arbol = parser.Parse(cadena);
+                ParseTreeNode raiz = arbol.Root;
+
+                generarGrafo(raiz);
+
+
+                Process cmd = new Process();
+                cmd.StartInfo.FileName = "cmd.exe";
+                cmd.StartInfo.RedirectStandardInput = true;
+                cmd.StartInfo.RedirectStandardOutput = true;
+                cmd.StartInfo.CreateNoWindow = true;
+                cmd.StartInfo.UseShellExecute = false;
+                cmd.Start();
+                cmd.StandardInput.WriteLine("cd C:\\compiladores2");
+                cmd.StandardInput.WriteLine("dot -Tsvg ast.txt -o ast.svg");
+                cmd.Close();
+
+
+            }
+            catch(Exception ex)
+            {
+                this.debuggerConsole.Text = ex.Message;
+            }
+
+
+        }
+
+
     }
 }

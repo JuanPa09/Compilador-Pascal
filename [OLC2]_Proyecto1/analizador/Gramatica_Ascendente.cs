@@ -54,6 +54,7 @@ namespace _OLC2__Proyecto1.analizador
             var Menos = ToTerm("-");
             var Por = ToTerm("*");
             var Div = ToTerm("/");
+            var Divi = ToTerm("div");
             var Mod = ToTerm("%");
             var Igual = ToTerm("=");
             var No_Igual = ToTerm("<>");
@@ -69,6 +70,7 @@ namespace _OLC2__Proyecto1.analizador
             var Else = ToTerm("else");
             var For = ToTerm("for");
             var To = ToTerm("to");
+            var Downto = ToTerm("downto");
             var Do = ToTerm("do");
             var While = ToTerm("while");
             var Repeat = ToTerm("repeat");
@@ -217,7 +219,7 @@ namespace _OLC2__Proyecto1.analizador
 
 
             Tipo_Array.Rule
-                                        = Type + Identificador + Igual + Array + Cor_Izq + Entero + Pt + Pt + Entero + Cor_Der + Of + Tipo_Variable + Pt_Coma
+                                        = Type + Identificador + Igual + Array + Cor_Izq + Dimensiones + Cor_Der + Of + Tipo_Variable + Pt_Coma
                                         ;
 
             /*Tipo_Array.ErrorRule
@@ -367,6 +369,7 @@ namespace _OLC2__Proyecto1.analizador
                                         = Identificador + Ds_Pts + Igual + Expresion_Cadena + Pt_Coma
                                         | Valor_Arreglo + Ds_Pts + Igual + Expresion_Cadena + Pt_Coma
                                         | Identificador + Pt + Identificador + Ds_Pts + Igual + Expresion_Cadena + Pt_Coma
+
                                         ;
 
             /*Asignacion.ErrorRule
@@ -434,6 +437,7 @@ namespace _OLC2__Proyecto1.analizador
 
             For_Statement.Rule
                                         = For + Identificador + Ds_Pts + Igual + Expresion_Numerica + To + Expresion_Numerica + Do + Begin + Instrucciones_Bodyp + End + Pt_Coma
+                                        | For + Identificador + Ds_Pts + Igual + Expresion_Numerica + Downto + Expresion_Numerica + Do + Begin + Instrucciones_Bodyp + End + Pt_Coma
                                         ;
 
             /*For_Statement.ErrorRule
@@ -545,6 +549,7 @@ namespace _OLC2__Proyecto1.analizador
                                         | Expresion_Numerica + Menos + Expresion_Numerica
                                         | Expresion_Numerica + Por + Expresion_Numerica
                                         | Expresion_Numerica + Div + Expresion_Numerica
+                                        | Expresion_Numerica + Divi + Expresion_Numerica
                                         | Expresion_Numerica + Mod + Expresion_Numerica
                                         | Entero
                                         | Decimal

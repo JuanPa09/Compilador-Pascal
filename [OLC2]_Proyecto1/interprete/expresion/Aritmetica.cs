@@ -27,7 +27,7 @@ namespace _OLC2__Proyecto1.interprete.expresion
             Simbolo resultado;
             Tipos tipoResultante = util.TablaTipos.getTipo(izquierda.tipo,derecha.tipo);
 
-            if (tipoResultante != Tipos.NUMBER && tipo != '+')
+            if (tipoResultante != Tipos.NUMBER && tipoResultante != Tipos.DOUBLE && tipo != '+')
                 throw new util.ErrorPascal(0,0,"Operacion invalida","semantico",reporte); // Cambiar Exception por errorPascal
 
             switch (tipo)
@@ -51,6 +51,9 @@ namespace _OLC2__Proyecto1.interprete.expresion
                     return resultado;
                 case '/':
                     resultado = new Simbolo(double.Parse(izquierda.ToString()) / double.Parse(derecha.ToString()), izquierda.tipo, null);
+                    return resultado;
+                case 'd':
+                    resultado = new Simbolo(int.Parse(izquierda.ToString()) / int.Parse(derecha.ToString()), new Tipo(Tipos.NUMBER,null), null);
                     return resultado;
                 default:
                     resultado = new Simbolo(double.Parse(izquierda.ToString()) % double.Parse(derecha.ToString()), izquierda.tipo, null);

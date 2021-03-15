@@ -31,7 +31,7 @@ namespace _OLC2__Proyecto1.interprete.instruccion
             if (valor.tipo.tipo != Tipos.BOOLEAN)
                 throw new util.ErrorPascal(0, 0, "No es una expresion logica", "semantico",reporte);
 
-            Entorno entornoIf = new Entorno(".if",entorno,reporte);
+            //Entorno entornoIf = new Entorno(".if",entorno,reporte);
             if (bool.Parse(valor.valor.ToString()))
             {
                 
@@ -41,7 +41,10 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                     if (instruccion!=null)
                         try
                         {
-                            return instruccion.ejecutar(entornoIf,reporte);
+                            object retorno = instruccion.ejecutar(entorno,reporte);
+                            if (retorno != null){
+                                return retorno;
+                            }
                         }
                         catch(Exception ex)
                         {
@@ -56,7 +59,11 @@ namespace _OLC2__Proyecto1.interprete.instruccion
                         if(instruccion!=null)
                             try
                             {
-                                return instruccion.ejecutar(entorno,reporte);
+                                object retorno =  instruccion.ejecutar(entorno,reporte);
+                                if(retorno != null)
+                                {
+                                    return retorno;
+                                }
                             }
                             catch(Exception ex) { Debug.WriteLine(ex.ToString()); }
                     }

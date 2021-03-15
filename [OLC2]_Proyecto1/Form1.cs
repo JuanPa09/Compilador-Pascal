@@ -154,6 +154,15 @@ namespace _OLC2__Proyecto1
             reporte.generarReporte();
         }
 
-        
+        private void button4_Click(object sender, EventArgs e)
+        {
+            reporte.reporteSimbolos();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Analizador analizador = new Analizador(this.debuggerConsole, Consola, reporte);
+            analizador.reporteAst(Pascal.Text);
+        }
     }
 }
